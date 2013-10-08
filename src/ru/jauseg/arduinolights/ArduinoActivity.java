@@ -31,8 +31,12 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 	private LinearLayout layoutBluetoothDevice;
 	private TextView textBluetoothDevice;
 	private Button buttonBluetoothDevice;
-	private boolean isDeviceRecieverRegistered = false;
 	private BroadcastReceiver bluetoothDeviceReciever = new BluetoothDeviceReciever(this);
+
+	private LinearLayout layoutConnectionState;
+	private TextView textConnectionState;
+	private Button buttonConnectSwitch;
+	private boolean isConnected = false;
 
 	private Socket deviceSocket = null;
 
@@ -53,6 +57,13 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 			textBluetoothDevice = (TextView) findViewById(R.id.text_bluetooth_device);
 			buttonBluetoothDevice = (Button) findViewById(R.id.button_bluetooth_device);
 			buttonBluetoothDevice.setOnClickListener(onClickListener);
+
+			layoutConnectionState = (LinearLayout) findViewById(R.id.layout_connection_state);
+			textConnectionState = (TextView) findViewById(R.id.text_connection_state);
+			buttonConnectSwitch = (Button) findViewById(R.id.button_connect_switch);
+			buttonConnectSwitch.setOnClickListener(onClickListener);
+
+			registerReceiver(bluetoothDeviceReciever, new IntentFilter(BluetoothDevicePicker.ACTION_DEVICE_SELECTED));
 		}
 		else
 		{
@@ -67,10 +78,6 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		if (bluetoothAdapter != null)
 		{
 			buttonBluetoothSwitch.post(userInterfaceUpdaterRunnable);
-			if (isDeviceRecieverRegistered)
-			{
-				unregisterReceiver(bluetoothDeviceReciever);
-			}
 		}
 		super.onResume();
 	}
@@ -81,9 +88,18 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		if (bluetoothAdapter != null)
 		{
 			buttonBluetoothSwitch.removeCallbacks(userInterfaceUpdaterRunnable);
-			isDeviceRecieverRegistered = false;
 		}
 		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		if (bluetoothAdapter != null)
+		{
+			unregisterReceiver(bluetoothDeviceReciever);
+		}
+		super.onDestroy();
 	}
 
 	private Runnable userInterfaceUpdaterRunnable = new Runnable()
@@ -109,6 +125,10 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 
 				case R.id.button_bluetooth_device:
 					onButtonBluetoothDeviceClick();
+					break;
+
+				case R.id.button_connect_switch:
+					onButtonConnectionClick();
 					break;
 
 				default:
@@ -153,22 +173,41 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 			{
 				textBluetoothDevice.setText(String.format("%s (%s)", bluetoothDevice.getName(),
 						bluetoothDevice.getAddress()));
+
+				layoutConnectionState.setVisibility(View.VISIBLE);
+
+				if (deviceSocket != null)
+				{
+					textConnectionState.setText("Connected");
+					buttonConnectSwitch.setText("Disconnect");
+				}
+				else
+				{
+					textConnectionState.setText("Disconnected");
+					buttonConnectSwitch.setText("Connect");
+				}
+			}
+			else
+			{
+				layoutConnectionState.setVisibility(View.GONE);
 			}
 		}
 		else
 		{
 			layoutBluetoothDevice.setVisibility(View.GONE);
+			layoutConnectionState.setVisibility(View.GONE);
 		}
+	}
+
+	protected void onButtonConnectionClick()
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 	private void onButtonBluetoothDeviceClick()
 	{
-		if (isDeviceRecieverRegistered == false)
-		{
-			isDeviceRecieverRegistered = true;
-			registerReceiver(bluetoothDeviceReciever, new IntentFilter(BluetoothDevicePicker.ACTION_DEVICE_SELECTED));
-			startActivity(BluetoothDevicePicker.intent());
-		}
+		startActivity(BluetoothDevicePicker.intent());
 	}
 
 	private void onButtonBluetoothSwitchClick()
@@ -187,7 +226,6 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 	@Override
 	public void onBluetoothDevice(BluetoothDevice device)
 	{
-		isDeviceRecieverRegistered = false;
 		bluetoothDevice = device;
 		userInterfaceUpdate();
 	}

@@ -112,7 +112,6 @@
             android:id="@+id/button_connect_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:text="..." />
     </LinearLayout>
 
