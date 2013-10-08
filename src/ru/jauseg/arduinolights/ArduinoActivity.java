@@ -167,13 +167,8 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		else
 		{
 			isDeviceRecieverRegistered = true;
-
 			registerReceiver(bluetoothDeviceReciever, new IntentFilter(BluetoothDevicePicker.ACTION_DEVICE_SELECTED));
-			startActivity(new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
-					.putExtra(BluetoothDevicePicker.EXTRA_NEED_AUTH, false)
-					.putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_TYPE_ALL)
-					.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS));
-
+			startActivity(BluetoothDevicePicker.intent());
 		}
 	}
 
