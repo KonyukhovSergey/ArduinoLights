@@ -1,12 +1,12 @@
 package ru.jauseg.arduinolights;
 
+import java.net.Socket;
+
 import ru.jauseg.arduinolights.BluetoothDeviceReciever.OnBluetoothDeviceListener;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
@@ -27,11 +27,14 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 
 	private Button buttonBluetoothSwitch;
 	private TextView textBluetoothState;
+
 	private LinearLayout layoutBluetoothDevice;
 	private TextView textBluetoothDevice;
 	private Button buttonBluetoothDevice;
 	private boolean isDeviceRecieverRegistered = false;
 	private BroadcastReceiver bluetoothDeviceReciever = new BluetoothDeviceReciever(this);
+
+	private Socket deviceSocket = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -160,11 +163,7 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 
 	private void onButtonBluetoothDeviceClick()
 	{
-		if (isDeviceRecieverRegistered)
-		{
-
-		}
-		else
+		if (isDeviceRecieverRegistered == false)
 		{
 			isDeviceRecieverRegistered = true;
 			registerReceiver(bluetoothDeviceReciever, new IntentFilter(BluetoothDevicePicker.ACTION_DEVICE_SELECTED));

@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="press button '...' to select"
+                android:text="press button &apos;...&apos; to select"
                 android:textColor="#fff"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -78,6 +78,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="true"
+            android:text="..." />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_connection_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/round_rect_info"
+        android:orientation="horizontal"
+        android:padding="8dp" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Connection state:"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/text_connection_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="..."
+            android:textColor="#fff"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/button_connect_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
             android:text="..." />
     </LinearLayout>
 
