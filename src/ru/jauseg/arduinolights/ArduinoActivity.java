@@ -18,6 +18,7 @@ import android.widget.TextView;
 public class ArduinoActivity extends Activity implements OnBluetoothDeviceListener
 {
 	private static BluetoothAdapter bluetoothAdapter;
+	private static cfg cfg;
 	private static BluetoothDevice bluetoothDevice = null;
 
 	static
@@ -36,14 +37,19 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 	private LinearLayout layoutConnectionState;
 	private TextView textConnectionState;
 	private Button buttonConnectSwitch;
+
 	private boolean isConnected = false;
 
 	private Socket deviceSocket = null;
+
+	private boolean isNeedRestoreDevice;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		cfg = new cfg(this, "bluetooth.cfg");
 
 		if (bluetoothAdapter != null)
 		{
@@ -78,6 +84,7 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		if (bluetoothAdapter != null)
 		{
 			buttonBluetoothSwitch.post(userInterfaceUpdaterRunnable);
+			isNeedRestoreDevice = true;
 		}
 		super.onResume();
 	}
@@ -119,20 +126,20 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		{
 			switch (v.getId())
 			{
-				case R.id.button_bluetooth_switch:
-					onButtonBluetoothSwitchClick();
-					break;
+			case R.id.button_bluetooth_switch:
+				onButtonBluetoothSwitchClick();
+				break;
 
-				case R.id.button_bluetooth_device:
-					onButtonBluetoothDeviceClick();
-					break;
+			case R.id.button_bluetooth_device:
+				onButtonBluetoothDeviceClick();
+				break;
 
-				case R.id.button_connect_switch:
-					onButtonConnectionClick();
-					break;
+			case R.id.button_connect_switch:
+				onButtonConnectionClick();
+				break;
 
-				default:
-					break;
+			default:
+				break;
 			}
 		}
 	};
@@ -142,27 +149,33 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		boolean isBluetoothEnabled = false;
 		switch (bluetoothAdapter.getState())
 		{
-			case BluetoothAdapter.STATE_OFF:
-				textBluetoothState.setText("OFF");
-				buttonBluetoothSwitch.setText("Turn ON");
-				buttonBluetoothSwitch.setEnabled(true);
-				break;
-			case BluetoothAdapter.STATE_ON:
-				isBluetoothEnabled = true;
-				textBluetoothState.setText("ON");
-				buttonBluetoothSwitch.setText("Turn OFF");
-				buttonBluetoothSwitch.setEnabled(true);
-				break;
-			case BluetoothAdapter.STATE_TURNING_OFF:
-				textBluetoothState.setText("Turning OFF");
-				buttonBluetoothSwitch.setText("Turn ON");
-				buttonBluetoothSwitch.setEnabled(false);
-				break;
-			case BluetoothAdapter.STATE_TURNING_ON:
-				textBluetoothState.setText("Turning ON");
-				buttonBluetoothSwitch.setText("Turn ON");
-				buttonBluetoothSwitch.setEnabled(false);
-				break;
+		case BluetoothAdapter.STATE_OFF:
+			textBluetoothState.setText("OFF");
+			buttonBluetoothSwitch.setText("Turn ON");
+			buttonBluetoothSwitch.setEnabled(true);
+			break;
+		case BluetoothAdapter.STATE_ON:
+			isBluetoothEnabled = true;
+			textBluetoothState.setText("ON");
+			buttonBluetoothSwitch.setText("Turn OFF");
+			buttonBluetoothSwitch.setEnabled(true);
+
+			if (isNeedRestoreDevice)
+			{
+				restoreDevice();
+				isNeedRestoreDevice = false;
+			}
+			break;
+		case BluetoothAdapter.STATE_TURNING_OFF:
+			textBluetoothState.setText("Turning OFF");
+			buttonBluetoothSwitch.setText("Turn ON");
+			buttonBluetoothSwitch.setEnabled(false);
+			break;
+		case BluetoothAdapter.STATE_TURNING_ON:
+			textBluetoothState.setText("Turning ON");
+			buttonBluetoothSwitch.setText("Turn ON");
+			buttonBluetoothSwitch.setEnabled(false);
+			break;
 		}
 
 		if (isBluetoothEnabled)
@@ -199,6 +212,23 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		}
 	}
 
+	private void restoreDevice()
+	{
+		String macAddress = cfg.get(cfg.DEVICE_MAC_ADDRESS);
+
+		if (macAddress.equals("null") == false)
+		{
+			try
+			{
+				bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
+			}
+			catch (IllegalArgumentException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
 	protected void onButtonConnectionClick()
 	{
 		// TODO Auto-generated method stub
@@ -223,10 +253,32 @@ public class ArduinoActivity extends Activity implements OnBluetoothDeviceListen
 		userInterfaceUpdate();
 	}
 
+	private void setBluetoothEnabled(boolean isEnabled)
+	{
+		if (bluetoothAdapter != null)
+		{
+			if (isEnabled)
+			{
+				if (bluetoothAdapter.isEnabled() == false)
+				{
+					bluetoothAdapter.enable();
+				}
+			}
+			else
+			{
+				if (bluetoothAdapter.isEnabled())
+				{
+					bluetoothAdapter.disable();
+				}
+			}
+		}
+	}
+
 	@Override
 	public void onBluetoothDevice(BluetoothDevice device)
 	{
 		bluetoothDevice = device;
+		cfg.set(cfg.DEVICE_MAC_ADDRESS, device.getAddress());
 		userInterfaceUpdate();
 	}
 }
