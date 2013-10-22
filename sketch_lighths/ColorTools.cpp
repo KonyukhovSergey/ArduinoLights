@@ -1,6 +1,6 @@
 #include "ColorTools.h"
 
-int HSV2RGB(float h, float s, float v);
+int HSV2RGB(float h, float s, float v)
 {
 	int i, f, r, g, b;
 	float p, q, t;
@@ -65,3 +65,36 @@ int HSV2RGB(float h, float s, float v);
 	
 	return (r << 16) | (g << 8) | b;
 }
+
+int blendAdd(int a, int s, int d)
+{
+  int v = ((a * s) >> 8) + d;
+  
+  if(v < 0)
+  {
+    v = 0;
+  }
+  
+  if(v > 255)
+  {
+    v = 255;
+  }
+  
+  return v;
+}
+
+int fadeValue(int v, int c)
+{
+  if(v >= c)
+  {
+    v -= c;
+
+    if(v < 0)
+    {
+      v = 0;
+    }
+  }
+  
+  return v;
+}
+

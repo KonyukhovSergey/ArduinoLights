@@ -1,37 +1,6 @@
+#include "ColorTools.h"
 
 #define SCREEN_PIXELS 50
-
-int blendAdd(int a, int s, int d)
-{
-  int v = ((a * s) >> 8) + d;
-  
-  if(v < 0)
-  {
-    v = 0;
-  }
-  
-  if(v > 255)
-  {
-    v = 255;
-  }
-  
-  return v;
-}
-
-int fadeValue(int v, int c)
-{
-  if(v >= c)
-  {
-    v -= c;
-
-    if(v < 0)
-    {
-      v = 0;
-    }
-  }
-  
-  return v;
-}
 
 struct PointRGB
 {
@@ -51,6 +20,7 @@ struct PointRGB
     this->pos = pos;
     this->vel = vel;
     this->size = size;
+    
   }
   
   float getAlpha(float pos)
