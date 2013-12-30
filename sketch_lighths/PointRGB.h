@@ -1,27 +1,18 @@
-// PointRGB Copyright (c) Sergey Konyukhov. All right reserved
-
 #ifndef POINTRGB_H
 #define POINTRGB_H
 
-class PointRGB
+struct PointRGB
 {
-	private:
-		int r;
-		int g;
-		int b;
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
   
-		float pos;
-		float vel;
-		float size;
-	
-		float getAlpha(float pos);
-		void init(int r, int g, int b, float pos, float vel, float size);
-		
-	public:
-		void init(float size, float sizeDelta);
-		void tick(float dt);
-
+  float pos;
+  float vel;
+  float size;
+  
+  void init(uint8_t r, uint8_t g, uint8_t b, float pos, float vel, float size);
+  float getAlpha(float pos);
 };
 
 #endif
- 

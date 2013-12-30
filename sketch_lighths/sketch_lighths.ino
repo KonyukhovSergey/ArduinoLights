@@ -1,109 +1,59 @@
-#include "ColorTools.h"
+#include <SPI.h>
 
-#define SCREEN_PIXELS 50
+#include "Screen.h"
+#include "Message.h"
 
-struct PointRGB
-{
-  int r;
-  int g;
-  int b;
-  
-  float pos;
-  float vel;
-  float size;
-  
-  void init(int r, int g, int b, float pos, float vel, float size)
-  {
-    this->r = r;
-    this->g = g;
-    this->b = b;
-    this->pos = pos;
-    this->vel = vel;
-    this->size = size;
-    
-  }
-  
-  float getAlpha(float pos)
-  {
-    float d = pos - this->pos;
+#include "ModeSingleColor.h"
+#include "ModePointsRGB.h"
 
-    if(d > size || d < -size)
-    {
-      return 0;
-    }
-
-    return (float)((cos((d / size) * 3.1415962f) + 1.0f) * 0.5f);
-  }
-};
-
-struct Screen
-{
-  int pixels[SCREEN_PIXELS];
-  
-  void clear(int color)
-  {
-    for(int i = 0; i < SCREEN_PIXELS; i++)
-    {
-      pixels[i] = color;
-    }
-  }
-  
-  void fade(int value)
-  {
-    for(int i = 0; i < SCREEN_PIXELS; i++)
-    {
-      pixels[i] = fadeValue(pixels[i], value);
-    }
-  }
-  
-  void blendAdd(int i, int a, int r, int g, int b)
-  {
-    int c = pixels[i];
-
-    b = ::blendAdd(a, b, c & 0xff);
-    c = c >> 8;
-    
-    g = ::blendAdd(a, g, c & 0xff);
-    c = c >> 8;
-
-    r = ::blendAdd(a, r, c & 0xff);
-
-    pixels[i] = (0xff << 24) | (r << 16) | (g << 8) | b;
-  }
-  
-  void renderPoint(PointRGB *p)
-  {
-    for(int i = 0; i < SCREEN_PIXELS; i++)
-    {
-      int a = (int)(255 * p->getAlpha(i));
-
-      if(a > 0)
-      {
-        blendAdd(i, a, p->r, p->g, p->b);
-      }
-    }
-  }  
-};
-
-
-
-int led = 13;
+#define MODE_SINGLE_COLOR = 0x01
 
 Screen screen;
+Message msg;
 
-void setup()
+uint8_t data[256];
+int mode;
+
+void setup() 
 {
-  pinMode(led, OUTPUT);     
+	Serial.begin(115200);
+	SPI.begin();
+	SPI.setBitOrder(MSBFIRST);
+	SPI.setDataMode(SPI_MODE0); 
+	SPI.setClockDivider(SPI_CLOCK_DIV16);
+	mode = 0;
+	delay(1);
+	msg.init();
 }
 
-void loop()
+void loop() 
 {
-  screen.clear(0);
-  
-  screen.renderPoint(0);
-  
-  digitalWrite(led, HIGH);
-  delay(1000);
-  digitalWrite(led, LOW);
-  delay(1000);
+	if(msg.isMessage() > 0)
+	{
+		mode = msg.data[0];
+
+		switch (mode)
+		{
+		case '1':
+			((ModeSingleColor*)data)->init(msg.data + 1);
+			break;
+
+		case '2':
+			((ModePointsRGB*)data)->init();
+		}
+	}
+
+	switch (mode)
+	{
+	case '1':
+		((ModeSingleColor*)data)->draw(screen);
+		break;
+
+	case '2':
+		((ModePointsRGB*)data)->draw(screen);
+	}
+
+	screen.sendToModules();
+	delay(1);
 }
+
