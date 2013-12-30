@@ -41,15 +41,15 @@ void SPIClass::draw()
 	{
 		COLORREF cr = RGB(data[i*3],data[i*3+1],data[i*3+2]);
 
-		SetPixel(hdc,i*4+10,10,cr);
-		SetPixel(hdc,i*4+10,11,cr);
-		SetPixel(hdc,i*4+10,12,cr);
-		SetPixel(hdc,i*4+10,13,cr);
-
-		SetPixel(hdc,i*4+11,10,cr);
-		SetPixel(hdc,i*4+11,11,cr);
-		SetPixel(hdc,i*4+11,12,cr);
-		SetPixel(hdc,i*4+11,13,cr);
+		SetPixel(hdc, i *4+10,10,cr);
+		SetPixel(hdc, i *4+10,11,cr);
+		SetPixel(hdc, i *4+10,12,cr);
+		SetPixel(hdc, i *4+10,13,cr);
+ 
+		SetPixel(hdc, i*4+11,10,cr);
+		SetPixel(hdc, i*4+11,11,cr);
+		SetPixel(hdc, i*4+11,12,cr);
+		SetPixel(hdc, i*4+11,13,cr);
 
 		SetPixel(hdc,i*4+12,10,cr);
 		SetPixel(hdc,i*4+12,11,cr);

@@ -85,6 +85,8 @@
     <ClInclude Include="arduino_mock\Arduino.h" />
     <ClInclude Include="scetch_code\ARGB.h" />
     <ClInclude Include="scetch_code\Message.h" />
+    <ClInclude Include="scetch_code\ModePointsRGB.h" />
+    <ClInclude Include="scetch_code\ModeSingleColor.h" />
     <ClInclude Include="scetch_code\PointRGB.h" />
     <ClInclude Include="scetch_code\Screen.h" />
     <ClInclude Include="scetch_code\utils.h" />

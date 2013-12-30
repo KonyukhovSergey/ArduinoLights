@@ -31,6 +31,8 @@ int SerialClass::available(void)
 			fread(buf, len, 1, fl);
 			fclose(fl);
 
+			pos = 0;
+
 			remove(FILE_SERIAL_PORT_DATA);
 		}
 	}

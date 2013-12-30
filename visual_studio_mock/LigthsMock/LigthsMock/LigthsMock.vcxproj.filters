@@ -48,6 +48,12 @@
     <ClInclude Include="arduino_mock\SerialClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="scetch_code\ModeSingleColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scetch_code\ModePointsRGB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
