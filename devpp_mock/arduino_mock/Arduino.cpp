@@ -4,3 +4,8 @@ void delay(int value)
 {
 	Sleep(value);
 }
+
+int millis()
+{
+	return 2839;
+}

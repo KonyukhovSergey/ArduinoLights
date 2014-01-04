@@ -10,6 +10,7 @@
 #include "ModeSingleColor.h"
 #include "ModePointsRGB.h"
 #include "ModeAurora.h"
+#include "ModeProg.h"
 
 Screen screen;
 Message msg;
@@ -44,6 +45,10 @@ void loop()
 
 		case 0x03:
 			draw = ((ModeAurora*)data)->init();
+			break;
+			
+		case 0x04:
+			draw = ((ModeProg*)data)->init(msg.data + 1, msg.position - 1);
 			break;
 		}
 	}
@@ -85,6 +90,12 @@ int main(int argc, char** argv)
 			case 3:
 			 	Serial.set("\x01\x03", 2);
 				break;
+				
+			case 4:
+				Serial.set("\x54\x04\xc0\x43\x00\x00\x00\x53\xc0\x40\x00\x00\x00\x03\x06\x03\xc0\x43\x00\x00\x00\x01\x91\xc0\x43\x00\x00\x00\x57\xc0\x3e\x99\x99\x9a\x03\xc0\x40\x00\x00\x00\x01\x53\xc0\x40\x40\x00\x00\x03\x01\x06\x03\xc0\x43\x00\x00\x00\x01\x86\xc0\x43\x00\x00\x00\x57\xc0\x3d\xcc\xcc\xcd\x03\xc0\x40\x80\x00\x00\x01\x06\x03\xc0\x43\x00\x00\x00\x01\x81", 85);
+				i=50;
+				break;
+					
 				
 //			case 9:
 //				i = 0;

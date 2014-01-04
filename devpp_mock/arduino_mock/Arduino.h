@@ -9,5 +9,6 @@ typedef unsigned short uint16_t;
 typedef unsigned int uint32_t;
 
 void delay(int value);
+int millis();
 
 #endif

@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000001000000
-UnitCount=25
+UnitCount=28
 
 [VersionInfo]
 Major=1
@@ -292,6 +292,36 @@ BuildCmd=
 
 [Unit25]
 FileName=scetch_code\ModeAurora.h
+CompileCpp=1
+Folder=scetch_code
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit26]
+FileName=scetch_code\ModeProg.h
+CompileCpp=1
+Folder=scetch_code
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit27]
+FileName=scetch_code\ModeProg.cpp
+CompileCpp=1
+Folder=scetch_code
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit28]
+FileName=scetch_code\LightMachine.h
 CompileCpp=1
 Folder=scetch_code
 Compile=1
