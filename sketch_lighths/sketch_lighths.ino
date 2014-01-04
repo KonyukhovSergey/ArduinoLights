@@ -1,3 +1,4 @@
+#include <EEPROM.h>
 #include <SPI.h>
 
 #include "Screen.h"
@@ -5,55 +6,81 @@
 
 #include "ModeSingleColor.h"
 #include "ModePointsRGB.h"
-
-#define MODE_SINGLE_COLOR = 0x01
+#include "ModeAurora.h"
 
 Screen screen;
 Message msg;
 
-uint8_t data[256];
-int mode;
+drawFunction draw;
+
+void save(uint8_t *data, uint8_t len)
+{
+  EEPROM.write(0, len);
+  for(int i = 0; i < len; i++)
+  {
+    EEPROM.write(i + 1, data[i]);
+  }
+}
+
+void load(uint8_t *data)
+{
+  int len = EEPROM.read(0);
+  for(int i = 0; i < len; i++)
+  {
+    data[i] = EEPROM.read(i + 1);
+  }
+  
+  //data[0] = 3;
+}
+
+void updateMode()
+{
+  draw = 0;
+  switch (msg.data[0])
+  {
+  case 0x01:
+    draw = ((ModeSingleColor*)data)->init(msg.data + 1);
+    break;
+
+  case 0x02:
+    draw = ((ModePointsRGB*)data)->init();
+    break;
+    
+  case 0x03:
+    draw = ((ModeAurora*)data)->init();
+    break;
+  }
+}
 
 void setup() 
 {
-	Serial.begin(115200);
-	SPI.begin();
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0); 
-	SPI.setClockDivider(SPI_CLOCK_DIV16);
-	mode = 0;
-	delay(1);
-	msg.init();
+  Serial.begin(9600);
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setDataMode(SPI_MODE0); 
+  SPI.setClockDivider(SPI_CLOCK_DIV16);
+  delay(1);
+  msg.init();
+  load(msg.data);
+  updateMode();
 }
 
 void loop() 
 {
-	if(msg.isMessage() > 0)
-	{
-		mode = msg.data[0];
+  if(msg.isMessage() > 0)
+  {
+    save(msg.data, msg.position);
+    updateMode();
+  }
 
-		switch (mode)
-		{
-		case '1':
-			((ModeSingleColor*)data)->init(msg.data + 1);
-			break;
+  if(draw != 0)
+  {
+    draw(screen);
+  }
 
-		case '2':
-			((ModePointsRGB*)data)->init();
-		}
-	}
+  screen.sendToModules();
 
-	switch (mode)
-	{
-	case '1':
-		((ModeSingleColor*)data)->draw(screen);
-		break;
-
-	case '2':
-		((ModePointsRGB*)data)->draw(screen);
-	}
-
-	screen.sendToModules();
-	delay(1);
+  delay(1);
 }
+
 

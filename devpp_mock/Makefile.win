@@ -1,0 +1,64 @@
+# Project: devpp_arduino_mock
+# Makefile created by Dev-C++ 5.5.3
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = main.o arduino_mock/Arduino.o arduino_mock/SerialClass.o arduino_mock/SPI.o scetch_code/ARGB.o scetch_code/Message.o scetch_code/PointRGB.o scetch_code/Screen.o scetch_code/utils.o scetch_code/ModeBase.o scetch_code/ModeSingleColor.o scetch_code/ModePointsRGB.o scetch_code/ModeAurora.o
+LINKOBJ  = main.o arduino_mock/Arduino.o arduino_mock/SerialClass.o arduino_mock/SPI.o scetch_code/ARGB.o scetch_code/Message.o scetch_code/PointRGB.o scetch_code/Screen.o scetch_code/utils.o scetch_code/ModeBase.o scetch_code/ModeSingleColor.o scetch_code/ModePointsRGB.o scetch_code/ModeAurora.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -mwindows -g3
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/devpp_mock/scetch_code"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/devpp_mock/scetch_code"
+BIN      = devpp_arduino_mock.exe
+CXXFLAGS = $(CXXINCS) -g3
+CFLAGS   = $(INCS) -g3
+RM       = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+arduino_mock/Arduino.o: arduino_mock/Arduino.cpp
+	$(CPP) -c arduino_mock/Arduino.cpp -o arduino_mock/Arduino.o $(CXXFLAGS)
+
+arduino_mock/SerialClass.o: arduino_mock/SerialClass.cpp
+	$(CPP) -c arduino_mock/SerialClass.cpp -o arduino_mock/SerialClass.o $(CXXFLAGS)
+
+arduino_mock/SPI.o: arduino_mock/SPI.cpp
+	$(CPP) -c arduino_mock/SPI.cpp -o arduino_mock/SPI.o $(CXXFLAGS)
+
+scetch_code/ARGB.o: scetch_code/ARGB.cpp
+	$(CPP) -c scetch_code/ARGB.cpp -o scetch_code/ARGB.o $(CXXFLAGS)
+
+scetch_code/Message.o: scetch_code/Message.cpp
+	$(CPP) -c scetch_code/Message.cpp -o scetch_code/Message.o $(CXXFLAGS)
+
+scetch_code/PointRGB.o: scetch_code/PointRGB.cpp
+	$(CPP) -c scetch_code/PointRGB.cpp -o scetch_code/PointRGB.o $(CXXFLAGS)
+
+scetch_code/Screen.o: scetch_code/Screen.cpp
+	$(CPP) -c scetch_code/Screen.cpp -o scetch_code/Screen.o $(CXXFLAGS)
+
+scetch_code/utils.o: scetch_code/utils.cpp
+	$(CPP) -c scetch_code/utils.cpp -o scetch_code/utils.o $(CXXFLAGS)
+
+scetch_code/ModeBase.o: scetch_code/ModeBase.cpp
+	$(CPP) -c scetch_code/ModeBase.cpp -o scetch_code/ModeBase.o $(CXXFLAGS)
+
+scetch_code/ModeSingleColor.o: scetch_code/ModeSingleColor.cpp
+	$(CPP) -c scetch_code/ModeSingleColor.cpp -o scetch_code/ModeSingleColor.o $(CXXFLAGS)
+
+scetch_code/ModePointsRGB.o: scetch_code/ModePointsRGB.cpp
+	$(CPP) -c scetch_code/ModePointsRGB.cpp -o scetch_code/ModePointsRGB.o $(CXXFLAGS)
+
+scetch_code/ModeAurora.o: scetch_code/ModeAurora.cpp
+	$(CPP) -c scetch_code/ModeAurora.cpp -o scetch_code/ModeAurora.o $(CXXFLAGS)

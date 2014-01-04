@@ -1,8 +1,6 @@
 #include "Screen.h"
 #include "utils.h"
 
-#include <SPI.h>
-
 void Screen::clear(int color)
 {
 	for(int i = 0; i < SCREEN_PIXELS; i++)

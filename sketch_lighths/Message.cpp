@@ -5,7 +5,8 @@
 
 uint8_t Message::isMessage()
 {
-  if(Serial.available() > 0)
+  
+  while(Serial.available() > 0)
   {
     int dataByte = Serial.read();
     
@@ -27,5 +28,6 @@ uint8_t Message::isMessage()
       }
     }
   }
+  
   return 0;
 }

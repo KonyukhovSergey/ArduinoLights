@@ -21,7 +21,7 @@ int SerialClass::available(void)
 	{
 		FILE *fl;
 
-		fopen_s(&fl, FILE_SERIAL_PORT_DATA, "rb");
+		fl = fopen(FILE_SERIAL_PORT_DATA, "rb");
 
 		if(fl)
 		{

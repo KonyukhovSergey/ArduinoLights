@@ -3,10 +3,15 @@
 
 #include <Arduino.h>
 
+
 #include "Screen.h"
 #include "utils.h"
 #include "ARGB.h"
 #include "PointRGB.h"
+
+#include "ModeBase.h"
+
+void drawPointsRGB(Screen &screen);
 
 struct ModePointsRGB
 {
@@ -16,34 +21,17 @@ struct ModePointsRGB
 	PointRGB pg;
 	PointRGB pb;
 
-	void init()
+	drawFunction init()
 	{
+		
 		p.init(255, 255, 255, 25, 0, 8);
 		pr.init(255,0,0, 0,0,10);
 		pg.init(0,255,0, 0,0,10);
 		pb.init(0,0,255, 0,0,10);
 		t = 0;
+		
+		return drawPointsRGB;
 	}
-
-	void draw(Screen &screen)
-	{
-		t += 0.0025f;
-
-		screen.clear(0);
-
-		p.pos = 25 + 25 * sin(t*10.0f);
-		screen.renderPoint(&p);
-
-		pr.pos = 25 + 25 * sin(t * 2.0f + 0.0f);
-		screen.renderPoint(&pr);
-
-		pg.pos = 25 + 25 * sin(t * 3.0f + 1.0f);
-		screen.renderPoint(&pg);
-
-		pb.pos = 25 + 25 * sin(t * 5.0f + 2.0f);
-		screen.renderPoint(&pb);
-	}
-
 };
 
 #endif

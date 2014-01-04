@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory.h>
+
 class SerialClass
 {
 public:
@@ -12,6 +14,16 @@ public:
 
 	int available(void);
 	int read(void);
+	
+	void begin(int){};
+	
+	void set(const char* data, int length)
+	{
+		pos = 0;
+		len = length;
+		memcpy(buf, data, len);
+	}
+	
 };
 
 extern SerialClass Serial;
