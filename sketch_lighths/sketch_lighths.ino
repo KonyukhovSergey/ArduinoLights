@@ -7,6 +7,7 @@
 #include "ModeSingleColor.h"
 #include "ModePointsRGB.h"
 #include "ModeAurora.h"
+#include "ModeProg.h"
 
 Screen screen;
 Message msg;
@@ -25,6 +26,7 @@ void save(uint8_t *data, uint8_t len)
 void load(uint8_t *data)
 {
   int len = EEPROM.read(0);
+  
   for(int i = 0; i < len; i++)
   {
     data[i] = EEPROM.read(i + 1);
@@ -48,6 +50,10 @@ void updateMode()
     
   case 0x03:
     draw = ((ModeAurora*)data)->init();
+    break;
+
+  case 0x04:
+    draw = ((ModeProg*)data)->init(msg.data + 1, msg.position - 1);
     break;
   }
 }
