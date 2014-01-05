@@ -3,17 +3,18 @@
 
 struct Message
 {
-	uint8_t data[256];
-	uint8_t length;
-	uint8_t position;
+  uint16_t len;
+  uint8_t size;
+  uint8_t xorValue;
 
-	uint8_t isMessage();
+  uint8_t isMessage();
 
-	void init()
-	{
-		length = 0;
-		position = 0;
-	}
+  void init()
+  {
+    len = 0;
+    size = 0;
+  }
 };
 
 #endif
+

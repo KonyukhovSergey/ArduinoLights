@@ -2,22 +2,23 @@
 
 void drawPointsRGB(Screen &screen)
 {
-	ModePointsRGB *mode = (ModePointsRGB*)data;
-	
-	mode->t += 0.0025f;
+  ModePointsRGB *mode = (ModePointsRGB*)data;
 
-	screen.clear(0);
+  mode->t += 0.0025f;
 
-	mode->p.pos = 25 + 25 * sin(mode->t*10.0f);
-	screen.renderPoint(&mode->p);
+  screen.clear(0);
 
-	mode->pr.pos = 25 + 25 * sin(mode->t * 2.0f + 0.0f);
-	screen.renderPoint(&mode->pr);
+  mode->p.pos = 25 + 25 * sin(mode->t*10.0f);
+  screen.renderPoint(&mode->p);
 
-	mode->pg.pos = 25 + 25 * sin(mode->t * 3.0f + 1.0f);
-	screen.renderPoint(&mode->pg);
+  mode->pr.pos = 25 + 25 * sin(mode->t * 2.0f + 0.0f);
+  screen.renderPoint(&mode->pr);
 
-	mode->pb.pos = 25 + 25 * sin(mode->t * 5.0f + 2.0f);
-	screen.renderPoint(&mode->pb);
+  mode->pg.pos = 25 + 25 * sin(mode->t * 3.0f + 1.0f);
+  screen.renderPoint(&mode->pg);
+
+  mode->pb.pos = 25 + 25 * sin(mode->t * 5.0f + 2.0f);
+  screen.renderPoint(&mode->pb);
 }
+
 

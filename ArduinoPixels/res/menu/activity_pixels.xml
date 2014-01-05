@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_pick_bluetooth_device"
+        android:showAsAction="always"
+        android:title="Pick BTD"/>
+
+</menu>

@@ -2,6 +2,7 @@
 #define MODE_BASE_H
 
 #include <Arduino.h>
+#include <EEPROM.h>
 
 #include "Screen.h"
 

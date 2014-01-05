@@ -14,12 +14,11 @@ struct ModeSingleColor
   uint8_t g;
   uint8_t b;
 
-  drawFunction init(uint8_t *data)
+  drawFunction init()
   {
-    r = data[0];
-    g = data[1];
-    b = data[2];
-
+    r = EEPROM.read(3+0);
+    g = EEPROM.read(3+1);
+    b = EEPROM.read(3+2);
     return drawSingleColor;
   }
 

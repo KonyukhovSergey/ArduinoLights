@@ -4,11 +4,11 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o arduino_mock/Arduino.o arduino_mock/SerialClass.o arduino_mock/SPI.o scetch_code/ARGB.o scetch_code/Message.o scetch_code/PointRGB.o scetch_code/Screen.o scetch_code/utils.o scetch_code/ModeBase.o scetch_code/ModeSingleColor.o scetch_code/ModePointsRGB.o scetch_code/ModeAurora.o scetch_code/ModeProg.o
-LINKOBJ  = main.o arduino_mock/Arduino.o arduino_mock/SerialClass.o arduino_mock/SPI.o scetch_code/ARGB.o scetch_code/Message.o scetch_code/PointRGB.o scetch_code/Screen.o scetch_code/utils.o scetch_code/ModeBase.o scetch_code/ModeSingleColor.o scetch_code/ModePointsRGB.o scetch_code/ModeAurora.o scetch_code/ModeProg.o
+OBJ      = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/ARGB.o for_object/Message.o for_object/ModeAurora.o for_object/ModeBase.o for_object/ModePointsRGB.o for_object/ModeProg.o for_object/ModeSingleColor.o for_object/PointRGB.o for_object/Screen.o for_object/utils.o for_object/EEPROM.o
+LINKOBJ  = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/ARGB.o for_object/Message.o for_object/ModeAurora.o for_object/ModeBase.o for_object/ModePointsRGB.o for_object/ModeProg.o for_object/ModeSingleColor.o for_object/PointRGB.o for_object/Screen.o for_object/utils.o for_object/EEPROM.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -mwindows -g3
-INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/devpp_mock/scetch_code"
-CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/devpp_mock/scetch_code"
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/sketch_lighths"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/sketch_lighths"
 BIN      = devpp_arduino_mock.exe
 CXXFLAGS = $(CXXINCS) -g3
 CFLAGS   = $(INCS) -g3
@@ -24,44 +24,47 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-main.o: main.cpp
-	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+for_object/main.o: main.cpp
+	$(CPP) -c main.cpp -o for_object/main.o $(CXXFLAGS)
 
-arduino_mock/Arduino.o: arduino_mock/Arduino.cpp
-	$(CPP) -c arduino_mock/Arduino.cpp -o arduino_mock/Arduino.o $(CXXFLAGS)
+for_object/Arduino.o: arduino_mock/Arduino.cpp
+	$(CPP) -c arduino_mock/Arduino.cpp -o for_object/Arduino.o $(CXXFLAGS)
 
-arduino_mock/SerialClass.o: arduino_mock/SerialClass.cpp
-	$(CPP) -c arduino_mock/SerialClass.cpp -o arduino_mock/SerialClass.o $(CXXFLAGS)
+for_object/SerialClass.o: arduino_mock/SerialClass.cpp
+	$(CPP) -c arduino_mock/SerialClass.cpp -o for_object/SerialClass.o $(CXXFLAGS)
 
-arduino_mock/SPI.o: arduino_mock/SPI.cpp
-	$(CPP) -c arduino_mock/SPI.cpp -o arduino_mock/SPI.o $(CXXFLAGS)
+for_object/SPI.o: arduino_mock/SPI.cpp
+	$(CPP) -c arduino_mock/SPI.cpp -o for_object/SPI.o $(CXXFLAGS)
 
-scetch_code/ARGB.o: scetch_code/ARGB.cpp
-	$(CPP) -c scetch_code/ARGB.cpp -o scetch_code/ARGB.o $(CXXFLAGS)
+for_object/ARGB.o: ../sketch_lighths/ARGB.cpp
+	$(CPP) -c ../sketch_lighths/ARGB.cpp -o for_object/ARGB.o $(CXXFLAGS)
 
-scetch_code/Message.o: scetch_code/Message.cpp
-	$(CPP) -c scetch_code/Message.cpp -o scetch_code/Message.o $(CXXFLAGS)
+for_object/Message.o: ../sketch_lighths/Message.cpp
+	$(CPP) -c ../sketch_lighths/Message.cpp -o for_object/Message.o $(CXXFLAGS)
 
-scetch_code/PointRGB.o: scetch_code/PointRGB.cpp
-	$(CPP) -c scetch_code/PointRGB.cpp -o scetch_code/PointRGB.o $(CXXFLAGS)
+for_object/ModeAurora.o: ../sketch_lighths/ModeAurora.cpp
+	$(CPP) -c ../sketch_lighths/ModeAurora.cpp -o for_object/ModeAurora.o $(CXXFLAGS)
 
-scetch_code/Screen.o: scetch_code/Screen.cpp
-	$(CPP) -c scetch_code/Screen.cpp -o scetch_code/Screen.o $(CXXFLAGS)
+for_object/ModeBase.o: ../sketch_lighths/ModeBase.cpp
+	$(CPP) -c ../sketch_lighths/ModeBase.cpp -o for_object/ModeBase.o $(CXXFLAGS)
 
-scetch_code/utils.o: scetch_code/utils.cpp
-	$(CPP) -c scetch_code/utils.cpp -o scetch_code/utils.o $(CXXFLAGS)
+for_object/ModePointsRGB.o: ../sketch_lighths/ModePointsRGB.cpp
+	$(CPP) -c ../sketch_lighths/ModePointsRGB.cpp -o for_object/ModePointsRGB.o $(CXXFLAGS)
 
-scetch_code/ModeBase.o: scetch_code/ModeBase.cpp
-	$(CPP) -c scetch_code/ModeBase.cpp -o scetch_code/ModeBase.o $(CXXFLAGS)
+for_object/ModeProg.o: ../sketch_lighths/ModeProg.cpp
+	$(CPP) -c ../sketch_lighths/ModeProg.cpp -o for_object/ModeProg.o $(CXXFLAGS)
 
-scetch_code/ModeSingleColor.o: scetch_code/ModeSingleColor.cpp
-	$(CPP) -c scetch_code/ModeSingleColor.cpp -o scetch_code/ModeSingleColor.o $(CXXFLAGS)
+for_object/ModeSingleColor.o: ../sketch_lighths/ModeSingleColor.cpp
+	$(CPP) -c ../sketch_lighths/ModeSingleColor.cpp -o for_object/ModeSingleColor.o $(CXXFLAGS)
 
-scetch_code/ModePointsRGB.o: scetch_code/ModePointsRGB.cpp
-	$(CPP) -c scetch_code/ModePointsRGB.cpp -o scetch_code/ModePointsRGB.o $(CXXFLAGS)
+for_object/PointRGB.o: ../sketch_lighths/PointRGB.cpp
+	$(CPP) -c ../sketch_lighths/PointRGB.cpp -o for_object/PointRGB.o $(CXXFLAGS)
 
-scetch_code/ModeAurora.o: scetch_code/ModeAurora.cpp
-	$(CPP) -c scetch_code/ModeAurora.cpp -o scetch_code/ModeAurora.o $(CXXFLAGS)
+for_object/Screen.o: ../sketch_lighths/Screen.cpp
+	$(CPP) -c ../sketch_lighths/Screen.cpp -o for_object/Screen.o $(CXXFLAGS)
 
-scetch_code/ModeProg.o: scetch_code/ModeProg.cpp
-	$(CPP) -c scetch_code/ModeProg.cpp -o scetch_code/ModeProg.o $(CXXFLAGS)
+for_object/utils.o: ../sketch_lighths/utils.cpp
+	$(CPP) -c ../sketch_lighths/utils.cpp -o for_object/utils.o $(CXXFLAGS)
+
+for_object/EEPROM.o: EEPROM.cpp
+	$(CPP) -c EEPROM.cpp -o for_object/EEPROM.o $(CXXFLAGS)

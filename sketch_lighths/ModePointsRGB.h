@@ -15,23 +15,24 @@ void drawPointsRGB(Screen &screen);
 
 struct ModePointsRGB
 {
-	float t;
-	PointRGB p;
-	PointRGB pr;
-	PointRGB pg;
-	PointRGB pb;
+  float t;
+  PointRGB p;
+  PointRGB pr;
+  PointRGB pg;
+  PointRGB pb;
 
-	drawFunction init()
-	{
-		
-		p.init(255, 255, 255, 25, 0, 8);
-		pr.init(255,0,0, 0,0,10);
-		pg.init(0,255,0, 0,0,10);
-		pb.init(0,0,255, 0,0,10);
-		t = 0;
-		
-		return drawPointsRGB;
-	}
+  drawFunction init()
+  {
+
+    p.init(255, 255, 255, 25, 0, 8);
+    pr.init(255,0,0, 0,0,10);
+    pg.init(0,255,0, 0,0,10);
+    pb.init(0,0,255, 0,0,10);
+    t = 0;
+
+    return drawPointsRGB;
+  }
 };
 
 #endif
+

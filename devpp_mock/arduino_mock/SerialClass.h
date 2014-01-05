@@ -14,6 +14,10 @@ public:
 
 	int available(void);
 	int read(void);
+	void write(int byte)
+	{
+		
+	}
 	
 	void begin(int){};
 	

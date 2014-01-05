@@ -1,0 +1,38 @@
+byte code:
+
+ bit
+ 76
+
+ 11000000 0xc0 - push const: push next 4 bytes to stack as float value
+ 01xvvvvv 0x40 - push vvvvv - variable index
+ 10xvvvvv 0x80 - pop  vvvvv - variable index 
+
+ 00cccccc - command
+ 01 add
+ 02 sub
+ 03 mul
+ 04 div
+ 05 neg
+ 06 sin
+ 07 cos
+ 08 exp
+ 09 loop
+ 10 sqrt
+ 11 delay
+ 12 time
+ 13 rnd
+ 14 pow
+
+transfer protocol
+
+expected:
+
+1. recv one byte (block lenght)
+2. recv lenght bytes (data)
+3. send one byte(xor data byte)
+
+last block lenght == 0;
+
+
+byte len
+

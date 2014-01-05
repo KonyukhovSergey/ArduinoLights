@@ -11,14 +11,15 @@
 
 struct Screen
 {
-	ARGB pixels[SCREEN_PIXELS];
+  ARGB pixels[SCREEN_PIXELS];
 
-	void clear(int color);
-	void fade(int value);
-	void blendAdd(int i, int a, int r, int g, int b);
-	void renderPoint(PointRGB *p);
-	void set(uint8_t i, uint8_t r, uint8_t g, uint8_t b);
-	void sendToModules();
+  void clear(int color);
+  void fade(int value);
+  void blendAdd(int i, int a, int r, int g, int b);
+  void renderPoint(PointRGB *p);
+  void set(uint8_t i, uint8_t r, uint8_t g, uint8_t b);
+  void sendToModules();
 };
 
 #endif
+

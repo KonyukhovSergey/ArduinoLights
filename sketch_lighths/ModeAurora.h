@@ -20,8 +20,8 @@ struct ModeAurora
 
   void draw(Screen &screen)
   {
-  	t += 0.1f;
-  	
+    t += 0.1f;
+
     for(int i = 0; i < SCREEN_PIXELS; i++)
     {
       float x = i;
@@ -33,5 +33,6 @@ struct ModeAurora
 };
 
 #endif
+
 
 
