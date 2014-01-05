@@ -12,8 +12,8 @@
         android:layout_weight="1"
         android:ems="10"
         android:gravity="top"
-        android:text="t=t+0.1;\n\nloop;\nr=255;\ng=127*sin(x*0.3+t)+128;\nb=127*sin(t*0.1)+127;"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:text="t=t+0.1;\n\nloop;\nr=255;\ng=127*sin(x*0.3+t)+128;\nb=127*sin(t*0.1)+127;" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,8 +23,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onFormatClick"
             android:layout_weight="1"
+            android:onClick="onFormatClick"
             android:text="format" />
 
         <Button
@@ -33,7 +33,6 @@
             android:layout_weight="1"
             android:onClick="onCompileAndSendClick"
             android:text="compile and send" />
-
     </LinearLayout>
 
 </LinearLayout>

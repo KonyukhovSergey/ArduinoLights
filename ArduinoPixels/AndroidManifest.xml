@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name="ru.serjik.arduinopixels.ActivityFormula"
-            android:label="@string/title_activity_activity_formula" >
+            android:label="@string/title_activity_activity_formula"
+            android:windowSoftInputMode="adjustResize" >
         </activity>
     </application>
 
