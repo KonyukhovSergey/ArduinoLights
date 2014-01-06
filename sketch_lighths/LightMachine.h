@@ -23,6 +23,12 @@
 #define COMMAND_TIME	0x0c
 #define COMMAND_RND	0x0d
 #define COMMAND_POW 	0x0e
+#define COMMAND_ABS		0x0f
+#define COMMAND_CALL	0x10
+#define COMMAND_RET		0x11
+#define COMMAND_JUMP	0x12
+#define COMMAND_JNZ		0x13
+
 
 struct LightMachine
 {
@@ -30,6 +36,7 @@ struct LightMachine
   uint16_t pos;
 
   float stackValues[STACK_SIZE];
+  uint32_t *stackInts;
   uint8_t stackPosition;
 
   float variables[26];
@@ -39,6 +46,7 @@ struct LightMachine
     len = lenght + BYTE_CODE_OFFSET;
 
     stackPosition = 0;
+    stackInts = (uint32_t*)stackValues;
 
     for(int i = 0; i < 26; i++)
     {
@@ -63,6 +71,20 @@ struct LightMachine
       stackPosition++;
     }
   }
+  
+  void pushInt(uint8_t value)
+  {
+  	stackInts[stackPosition] = value;
+  	stackPosition++;
+  }
+  
+  uint8_t popInt()
+  {
+  	stackPosition--;
+  	return stackInts[stackPosition];
+  }
+  
+  
 
   float getConst()
   {
@@ -193,6 +215,42 @@ struct LightMachine
           float lv = pop();
           push(pow(lv, rv));
         }
+        break;
+      case COMMAND_ABS:
+      	{
+      	  float value = pop();
+      	  push(value < 0 ? -value : value);
+      	}
+      	break;
+      case COMMAND_CALL:
+      	{
+      	  uint32_t address = popInt();
+		  pushInt(pos);
+		  pos = address;
+      	}
+      	break;
+      	
+      case COMMAND_RET:
+      	{
+      	  pos = popInt();
+      	}
+      	break;
+
+      case COMMAND_JUMP:
+      	{
+      	  pos = popInt();
+      	}
+      	break;
+
+      case COMMAND_JNZ:
+      	{
+      	  if(popInt() != 0)
+      	  {
+      	  	pos = popInt();
+      	  }
+      	}
+      	break;
+
       }
     }
 
