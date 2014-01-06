@@ -11,13 +11,14 @@
 
 Screen screen;
 Message msg;
+#include <stdio.h>
 
 drawFunction draw;
 
 void updateMode()
 {
   draw = 0;
-
+  
   switch (EEPROM.read(2))
   {
   case 0x01:

@@ -57,7 +57,7 @@ struct LightMachine
 
   void push(float value)
   {
-    if(stackPosition < STACK_SIZE)
+    if(stackPosition < STACK_SIZE - 1)
     {
       stackValues[stackPosition] = value;
       stackPosition++;
@@ -201,4 +201,5 @@ struct LightMachine
 };
 
 #endif
+
 

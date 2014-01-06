@@ -127,7 +127,7 @@ public class app extends Application implements OnBluetoothDeviceListener
 					{
 						throw new IOException("incorrect xor value");
 					}
-					Log.v("ArduinoPixels", "recieved correct xor byte");
+					Log.v("ArduinoPixels", "recieved correct xor byte = " + xorValueForBlock);
 
 				}
 				outStream.write(0);

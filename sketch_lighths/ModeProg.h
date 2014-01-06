@@ -14,6 +14,7 @@ extern LightMachine lm;
 
 struct ModeProg
 {
+  
   float t;
   uint16_t len;
 
@@ -23,7 +24,7 @@ struct ModeProg
 
     len = ((uint16_t)EEPROM.read(0)) | (((uint16_t)(EEPROM.read(1))) << 8);
 
-    lm.init(len);
+    lm.init(len - 1);
 
     return drawProg;
   }
@@ -31,7 +32,7 @@ struct ModeProg
   void draw(Screen &screen)
   {	
     uint16_t loopPosition = lm.execute(0);
-
+    
     for(int i = 0; i < SCREEN_PIXELS; i++)
     {
       lm.variables['x' - 'a'] = i;
@@ -41,6 +42,7 @@ struct ModeProg
       screen.pixels[i].r = lm.variables['r' - 'a'];
       screen.pixels[i].g = lm.variables['g' - 'a'];
       screen.pixels[i].b = lm.variables['b' - 'a'];
+      
     }
   }
 };
