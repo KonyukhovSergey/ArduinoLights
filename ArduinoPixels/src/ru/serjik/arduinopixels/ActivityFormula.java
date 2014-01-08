@@ -53,14 +53,25 @@ public class ActivityFormula extends Activity
 		{
 			Tokenizer tokenizer = new Tokenizer();
 			editProg.setText(tokenizer.format(editProg.getText().toString()));
-			
+
 			Evaluator eval = new Evaluator(tokenizer);
-			
+
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-			
-			baos.write(0x04);
-			baos.write(eval.getByteCode());
-			app.send(baos.toByteArray());
+
+			byte[] byteCode = eval.getByteCode();
+
+			if (byteCode.length < 1022)
+			{
+				Toast.makeText(this, "sending " + byteCode.length + " bytes as byte code", Toast.LENGTH_LONG).show();
+				baos.write(0x04);
+				baos.write(byteCode);
+				app.send(baos.toByteArray());
+			}
+			else
+			{
+				Toast.makeText(this, "error! the prog is to long. \n" + byteCode.length + " bytes as byte code",
+						Toast.LENGTH_LONG).show();
+			}
 		}
 		catch (Exception e)
 		{

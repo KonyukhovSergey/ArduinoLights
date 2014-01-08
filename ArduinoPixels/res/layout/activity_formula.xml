@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:gravity="top"
-        android:inputType="textMultiLine|textNoSuggestions"
+        android:inputType="textNoSuggestions|textMultiLine"
         android:text="t=t+0.1;\n\nloop;\nr=255;\ng=127*sin(x*0.3+t)+128;\nb=127*sin(t*0.1)+127;" />
 
     <LinearLayout

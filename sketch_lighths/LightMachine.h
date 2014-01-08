@@ -27,8 +27,11 @@
 #define COMMAND_CALL	0x10
 #define COMMAND_RET		0x11
 #define COMMAND_JUMP	0x12
-#define COMMAND_JNZ		0x13
+#define COMMAND_JUMPZ	0x13
+#define COMMAND_END		0x14
 
+#define COMMAND_GREATER		0x15
+#define COMMAND_LOWER		0x16
 
 struct LightMachine
 {
@@ -130,6 +133,22 @@ struct LightMachine
 
       switch(b)
       {
+      case COMMAND_GREATER:
+        {
+          float rv = pop();
+          float lv = pop();
+          pushInt(lv > rv? 1 : 0);
+        }
+        break;
+
+      case COMMAND_LOWER:
+        {
+          float rv = pop();
+          float lv = pop();
+          pushInt(lv < rv? 1 : 0);
+        }
+        break;
+
       case COMMAND_ADD:
         {
           float rv = pop();
@@ -242,15 +261,17 @@ struct LightMachine
       	}
       	break;
 
-      case COMMAND_JNZ:
+      case COMMAND_JUMPZ:
       	{
-      	  if(popInt() != 0)
+      	  if(popInt() == 0)
       	  {
       	  	pos = popInt();
       	  }
       	}
       	break;
 
+      case COMMAND_END:
+	    return pos - BYTE_CODE_OFFSET;
       }
     }
 
@@ -260,4 +281,4 @@ struct LightMachine
 
 #endif
 
-
+	

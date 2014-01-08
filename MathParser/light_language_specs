@@ -1,0 +1,58 @@
+that is only wtat i want.
+now is other scecification. soo simple.
+
+structure
+
+	void identifier(int identifier, ..., float identifier){}	
+	int identifier(...){}
+	float identifier(...){}
+	void main(void){}
+	
+	prog ::= function {function};
+	function ::= type identifier '(' params ')' '{' function_body '}'
+	params ::= one_param {, one_param};
+	one_param ::= type identifier;
+	
+	function_body ::= variables blocks;
+
+	variables ::= variable{variable}
+	variable ::= type identifier [= expression];
+	
+	blocks ::= block{block}
+	block ::= (keyword|system_function;|variable=expression;)
+		
+	keyword ::= if | while | for | return
+	if ::= '(' expression ')' '{' blocks '}' [else '{' blocks '}']
+		
+	while ::= '(' expression ')' '{' blocks '}'
+		
+	for ::= '(' blocks ';' expression ';' blocks ')' '{' blocks '}'
+	
+	expression ::= logic { ('&&'|'||') logic }
+	logik_term ::= bits { '|' | '&' | '^'   bits}
+	bits_term ::= relation { '<' | '>' relation }
+	relation ::= summ { '+' | '-' summ }
+	summ ::= mult { '*' | '/' mult }
+	mult ::= [unary_prefix] (const|variable|'('expression')'|'system_function))
+	
+		
+
+functions
+
+	float sin(float);
+	float cos(float);
+	float pow(float value, float exponent);
+	float exp(float);
+	float abs(float);
+	float sqrt(float);
+	
+	void delay(milliseconds); 
+	 
+	float time(); // time in seconds (based from micros arduino function)
+	float rnd(); // return float value from [0 to 1)
+	
+	void clear(int r, int g, int b);
+	void set(int x, int r, int g, int b);
+	int get(int x, int c);
+		
+	
