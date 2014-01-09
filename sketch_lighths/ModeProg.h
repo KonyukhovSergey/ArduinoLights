@@ -47,16 +47,32 @@ struct ModeProg
         return 0;
       }
 
-      screen.pixels[i].r = lm.variables['r' - 'a'];
-      screen.pixels[i].g = lm.variables['g' - 'a'];
-      screen.pixels[i].b = lm.variables['b' - 'a'];
+      screen.pixels[i].r = calcColor(lm.variables['r' - 'a']);
+      screen.pixels[i].g = calcColor(lm.variables['g' - 'a']);
+      screen.pixels[i].b = calcColor(lm.variables['b' - 'a']);
 
     }
 
     return 1;
   }
+
+  uint8_t calcColor(float value)
+  {
+    if(value < 0)
+    {
+      return 0;
+    }
+
+    if(value > 255)
+    {
+      return 255;
+    }
+
+    return value;
+  }
 };
 
 #endif
+
 
 
