@@ -6,7 +6,7 @@
 #include "Screen.h"
 #include "ModeBase.h"
 
-void drawSingleColor(Screen &screen);
+uint8_t drawSingleColor(Screen &screen);
 
 struct ModeSingleColor
 {
@@ -22,7 +22,7 @@ struct ModeSingleColor
     return drawSingleColor;
   }
 
-  void draw(Screen& screen)
+  uint8_t draw(Screen& screen)
   {
     for(int i = 0; i < SCREEN_PIXELS; i++)
     {
@@ -30,6 +30,7 @@ struct ModeSingleColor
       screen.pixels[i].g = g;
       screen.pixels[i].b = b;
     }
+    return 1;
   }
 };
 

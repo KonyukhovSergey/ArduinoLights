@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 
-
 #include "Screen.h"
 #include "utils.h"
 #include "ARGB.h"
@@ -11,7 +10,7 @@
 
 #include "ModeBase.h"
 
-void drawPointsRGB(Screen &screen);
+uint8_t drawPointsRGB(Screen &screen);
 
 struct ModePointsRGB
 {

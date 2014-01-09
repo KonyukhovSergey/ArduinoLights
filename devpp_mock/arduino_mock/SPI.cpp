@@ -37,7 +37,7 @@ void SPIClass::draw()
 {
 	for(int i = 0; i < SPI.len / 3; i++)
 	{
-		COLORREF cr = RGB(SPI.data[i * 3]*10, SPI.data[i * 3 + 1], SPI.data[i * 3 + 2]);
+		COLORREF cr = RGB(SPI.data[i * 3], SPI.data[i * 3 + 1], SPI.data[i * 3 + 2]);
 
 		SetPixel(hdc, i * 4 + 10, 10, cr);
 		SetPixel(hdc, i * 4 + 10, 11, cr);

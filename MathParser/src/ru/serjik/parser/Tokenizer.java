@@ -155,56 +155,58 @@ public class Tokenizer
 	public String format() throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
+		int ident = 0;
 
 		for (Token token : tokens)
 		{
-			// switch (token.token)
-			// {
-			// case ADD_SUB:
-			// case MUL_DIV:
-			// case ASSIGN:
-			// case RELATION:
-			// sb.append(' ');
-			// sb.append(token.sequence);
-			//
-			// if (token.sequence.equals("-"))
-			// {
-			// if (getTokens().indexOf(token) > 0)
-			// {
-			// Token prevToken = getTokens().get(getTokens().indexOf(token) - 1);
-			// if (prevToken.token == TokenType.CONST || prevToken.token == TokenType.VARIABLE)
-			// {
-			// sb.append(' ');
-			// }
-			// }
-			// }
-			// else
-			// {
-			// sb.append(' ');
-			//
-			// }
-			// break;
-			//
-			// case SEMICOLON:
-			// sb.append(token.sequence);
-			// sb.append('\n');
-			// break;
-			//
-			// case COMMA:
-			// sb.append(token.sequence);
-			// sb.append(' ');
-			// break;
-			//
-			// case LABEL:
-			// sb.append("\n    ");
-			// sb.append(token.sequence);
-			// sb.append(' ');
-			// break;
-			//
-			// default:
-			// sb.append(token.sequence);
-			// break;
-			// }
+			switch (token.token)
+			{
+				case ADD_SUB:
+				case MUL_DIV:
+				case ASSIGN:
+				case RELATION:
+					sb.append(' ');
+					sb.append(token.sequence);
+
+					if (token.sequence.equals("-"))
+					{
+						if (getTokens().indexOf(token) > 0)
+						{
+							Token prevToken = getTokens().get(getTokens().indexOf(token) - 1);
+							if (prevToken.token == TokenType.CONST_FLOAT || prevToken.token==TokenType.CONST_INTEGER || prevToken.token == TokenType.IDENTIFIER)
+							{
+								sb.append(' ');
+							}
+						}
+					}
+					else
+					{
+						sb.append(' ');
+
+					}
+					break;
+
+				case SEMICOLON:
+					sb.append(token.sequence);
+					sb.append('\n');
+					
+					break;
+
+				case COMMA:
+					sb.append(token.sequence);
+					sb.append(' ');
+					break;
+
+				case LABEL:
+					sb.append("\n");
+					sb.append(token.sequence);
+					sb.append(":");
+					break;
+
+				default:
+					sb.append(token.sequence);
+					break;
+			}
 		}
 		return sb.toString();
 	}

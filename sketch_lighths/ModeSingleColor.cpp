@@ -1,8 +1,8 @@
 #include "ModeSingleColor.h"
 
-void drawSingleColor(Screen &screen)
+uint8_t drawSingleColor(Screen &screen)
 {
-  ((ModeSingleColor*) data)->draw(screen);
+  return ((ModeSingleColor*) data)->draw(screen);
 }
 
 

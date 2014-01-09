@@ -8,6 +8,6 @@
 
 extern uint8_t data[256];
 
-typedef void(*drawFunction)(Screen&);
+typedef uint8_t(*drawFunction)(Screen&);
 
 #endif

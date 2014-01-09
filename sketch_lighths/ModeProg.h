@@ -8,13 +8,13 @@
 
 #include "LightMachine.h"
 
-void drawProg(Screen &screen);
+uint8_t drawProg(Screen &screen);
 
 extern LightMachine lm;
 
 struct ModeProg
 {
-  
+
   float t;
   uint16_t len;
 
@@ -29,23 +29,34 @@ struct ModeProg
     return drawProg;
   }
 
-  void draw(Screen &screen)
+  uint8_t draw(Screen &screen)
   {	
     uint16_t loopPosition = lm.execute(0);
-    
+
+    if(loopPosition == 65535)
+    {
+      return 0;
+    }
+
     for(int i = 0; i < SCREEN_PIXELS; i++)
     {
       lm.variables['x' - 'a'] = i;
 
-      lm.execute(loopPosition);
+      if(lm.execute(loopPosition) == 65535)
+      {
+        return 0;
+      }
 
       screen.pixels[i].r = lm.variables['r' - 'a'];
       screen.pixels[i].g = lm.variables['g' - 'a'];
       screen.pixels[i].b = lm.variables['b' - 'a'];
-      
+
     }
+
+    return 1;
   }
 };
 
 #endif
+
 

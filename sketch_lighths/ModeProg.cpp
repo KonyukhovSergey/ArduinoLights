@@ -2,8 +2,8 @@
 
 LightMachine lm;
 
-void drawProg(Screen &screen)
+uint8_t drawProg(Screen &screen)
 {
-  ((ModeProg*) data)->draw(screen);
+  return ((ModeProg*) data)->draw(screen);
 }
 

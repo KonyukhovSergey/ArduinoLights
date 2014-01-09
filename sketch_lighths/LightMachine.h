@@ -6,6 +6,7 @@
 #include <math.h>
 #include <Arduino.h>
 #include <EEPROM.h>
+#include <SerialClass.h>
 
 #define BYTE_CODE_OFFSET 3
 
@@ -23,15 +24,15 @@
 #define COMMAND_TIME	0x0c
 #define COMMAND_RND	0x0d
 #define COMMAND_POW 	0x0e
-#define COMMAND_ABS		0x0f
+#define COMMAND_ABS	0x0f
 #define COMMAND_CALL	0x10
-#define COMMAND_RET		0x11
+#define COMMAND_RET	0x11
 #define COMMAND_JUMP	0x12
 #define COMMAND_JUMPZ	0x13
-#define COMMAND_END		0x14
+#define COMMAND_END	0x14
 
-#define COMMAND_GREATER		0x15
-#define COMMAND_LOWER		0x16
+#define COMMAND_GREATER	0x15
+#define COMMAND_LOWER	0x16
 
 struct LightMachine
 {
@@ -41,6 +42,7 @@ struct LightMachine
   float stackValues[STACK_SIZE];
   uint32_t *stackInts;
   uint8_t stackPosition;
+  uint8_t interuptCounter;
 
   float variables[26];
 
@@ -55,6 +57,8 @@ struct LightMachine
     {
       variables[i] = 0;
     }
+
+    interuptCounter = 0;
   }
 
   float pop()
@@ -74,20 +78,18 @@ struct LightMachine
       stackPosition++;
     }
   }
-  
+
   void pushInt(uint8_t value)
   {
-  	stackInts[stackPosition] = value;
-  	stackPosition++;
+    stackInts[stackPosition] = value;
+    stackPosition++;
   }
-  
+
   uint8_t popInt()
   {
-  	stackPosition--;
-  	return stackInts[stackPosition];
+    stackPosition--;
+    return stackInts[stackPosition];
   }
-  
-  
 
   float getConst()
   {
@@ -110,6 +112,18 @@ struct LightMachine
 
     while(pos < len)
     {
+      interuptCounter++;
+
+      if(interuptCounter > 254)
+      {
+        interuptCounter = 0;
+
+        if(Serial.available() > 0)
+        {
+          return 65535;
+        }
+      }
+
       uint8_t b = EEPROM.read(pos);
       pos++;
 
@@ -236,42 +250,44 @@ struct LightMachine
         }
         break;
       case COMMAND_ABS:
-      	{
-      	  float value = pop();
-      	  push(value < 0 ? -value : value);
-      	}
-      	break;
+        {
+          float value = pop();
+          push(value < 0 ? -value : value);
+        }
+        break;
       case COMMAND_CALL:
-      	{
-      	  uint32_t address = popInt();
-		  pushInt(pos);
-		  pos = address;
-      	}
-      	break;
-      	
+        {
+          uint32_t address = popInt() + BYTE_CODE_OFFSET;
+          pushInt(pos);
+          pos = address;
+        }
+        break;
+
       case COMMAND_RET:
-      	{
-      	  pos = popInt();
-      	}
-      	break;
+        {
+          pos = popInt();
+        }
+        break;
 
       case COMMAND_JUMP:
-      	{
-      	  pos = popInt();
-      	}
-      	break;
+        {
+          pos = popInt() + BYTE_CODE_OFFSET;
+        }
+        break;
 
       case COMMAND_JUMPZ:
-      	{
-      	  if(popInt() == 0)
-      	  {
-      	  	pos = popInt();
-      	  }
-      	}
-      	break;
+        {
+          uint32_t address = popInt() + BYTE_CODE_OFFSET;
+
+          if(popInt() == 0)
+          {
+            pos = address;
+          }
+        }
+        break;
 
       case COMMAND_END:
-	    return pos - BYTE_CODE_OFFSET;
+        return pos - BYTE_CODE_OFFSET;
       }
     }
 
@@ -281,4 +297,5 @@ struct LightMachine
 
 #endif
 
-	
+
+

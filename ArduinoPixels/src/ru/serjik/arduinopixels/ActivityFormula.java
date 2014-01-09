@@ -2,7 +2,7 @@ package ru.serjik.arduinopixels;
 
 import java.io.ByteArrayOutputStream;
 
-import ru.serjik.parser.Evaluator;
+import ru.serjik.parser.ByteCodeGenerator;
 import ru.serjik.parser.Tokenizer;
 import android.os.Bundle;
 import android.app.Activity;
@@ -24,6 +24,7 @@ public class ActivityFormula extends Activity
 		setContentView(R.layout.activity_formula);
 
 		editProg = (EditText) findViewById(R.id.edit_program);
+		editProg.setText(app.cfg.get(cfg.PROGRAM));
 	}
 
 	@Override
@@ -39,7 +40,8 @@ public class ActivityFormula extends Activity
 		try
 		{
 			Tokenizer tokenizer = new Tokenizer();
-			editProg.setText(tokenizer.format(editProg.getText().toString()));
+			tokenizer.tokenize(editProg.getText().toString());
+			editProg.setText(tokenizer.format());
 		}
 		catch (Exception e)
 		{
@@ -52,9 +54,12 @@ public class ActivityFormula extends Activity
 		try
 		{
 			Tokenizer tokenizer = new Tokenizer();
-			editProg.setText(tokenizer.format(editProg.getText().toString()));
+			tokenizer.tokenize(editProg.getText().toString());
+			editProg.setText(tokenizer.format());
+			
+			app.cfg.set(cfg.PROGRAM, tokenizer.format());
 
-			Evaluator eval = new Evaluator(tokenizer);
+			ByteCodeGenerator eval = new ByteCodeGenerator(tokenizer);
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
 

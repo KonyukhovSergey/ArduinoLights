@@ -1,8 +1,8 @@
 #include "ModeAurora.h"
 
-void drawAurora(Screen &screen)
+uint8_t drawAurora(Screen &screen)
 {
-  ((ModeAurora*) data)->draw(screen);
+  return ((ModeAurora*) data)->draw(screen);
 }
 
 

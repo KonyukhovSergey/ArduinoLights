@@ -1,6 +1,6 @@
 #include "ModePointsRGB.h"
 
-void drawPointsRGB(Screen &screen)
+uint8_t drawPointsRGB(Screen &screen)
 {
   ModePointsRGB *mode = (ModePointsRGB*)data;
 
@@ -19,6 +19,9 @@ void drawPointsRGB(Screen &screen)
 
   mode->pb.pos = 25 + 25 * sin(mode->t * 5.0f + 2.0f);
   screen.renderPoint(&mode->pb);
+
+  return 1;
 }
+
 
 
