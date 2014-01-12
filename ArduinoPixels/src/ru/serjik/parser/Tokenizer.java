@@ -155,7 +155,7 @@ public class Tokenizer
 	public String format() throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
-		int ident = 0;
+		String ident = "";
 
 		for (Token token : tokens)
 		{
@@ -165,7 +165,7 @@ public class Tokenizer
 				case MUL_DIV:
 				case ASSIGN:
 				case RELATION:
-					sb.append(' ');
+					sb.append(" ");
 					sb.append(token.sequence);
 
 					if (token.sequence.equals("-"))
@@ -173,23 +173,24 @@ public class Tokenizer
 						if (getTokens().indexOf(token) > 0)
 						{
 							Token prevToken = getTokens().get(getTokens().indexOf(token) - 1);
-							if (prevToken.token == TokenType.CONST_FLOAT || prevToken.token==TokenType.CONST_INTEGER || prevToken.token == TokenType.IDENTIFIER)
+
+							if (prevToken.token == TokenType.CONST_FLOAT || prevToken.token == TokenType.CONST_INTEGER
+									|| prevToken.token == TokenType.IDENTIFIER)
 							{
-								sb.append(' ');
+								sb.append(" ");
 							}
 						}
 					}
 					else
 					{
-						sb.append(' ');
-
+						sb.append(" ");
 					}
 					break;
 
+				case COMMENT:
 				case SEMICOLON:
 					sb.append(token.sequence);
-					sb.append('\n');
-					
+					sb.append("\n" + ident);
 					break;
 
 				case COMMA:
@@ -198,9 +199,37 @@ public class Tokenizer
 					break;
 
 				case LABEL:
-					sb.append("\n");
+					sb.append("\n" + ident);
 					sb.append(token.sequence);
 					sb.append(":");
+					break;
+
+				case KEYWORD:
+				{
+					if (token.sequence.equals("if"))
+					{
+						ident = ident + "  ";
+						sb.append(token.sequence + " ");
+					}
+					else if (token.sequence.equals("then"))
+					{
+						sb.append(" " + token.sequence + "\n" + ident);
+					}
+					else if (token.sequence.equals("endif"))
+					{
+						ident = ident.substring(0, ident.length() - 2);
+						sb.setLength(sb.length() - 2);
+						sb.append(token.sequence);
+					}
+					else if (token.sequence.equals("loop") || token.sequence.equals("ret") || token.sequence.equals("end"))
+					{
+						sb.append(token.sequence);
+					}
+					else
+					{
+						sb.append(token.sequence + " ");
+					}
+				}
 					break;
 
 				default:

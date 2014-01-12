@@ -3,8 +3,6 @@
 
     <string name="app_name">ArduinoPixels</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_activity_single_color">Single Color</string>
-    <string name="title_activity_activity_formula">Formula</string>
+    <string name="title_activity_activity_formula">Light program</string>
 
 </resources>

@@ -62,100 +62,80 @@ public class app extends Application implements OnBluetoothDeviceListener
 		bluetoothState = BluetoothState.DICONNECTED;
 	}
 
-	public static void connect()
+	public static void connect() throws IOException
 	{
-		try
+		if (bluetoothState == BluetoothState.DICONNECTED)
 		{
-			if (bluetoothState == BluetoothState.DICONNECTED)
-			{
-				final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-				btAdapter = BluetoothAdapter.getDefaultAdapter();
-				BluetoothDevice device = btAdapter.getRemoteDevice(cfg.get(cfg.DEVICE_MAC_ADDRESS));
+			final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+			btAdapter = BluetoothAdapter.getDefaultAdapter();
+			BluetoothDevice device = btAdapter.getRemoteDevice(cfg.get(cfg.DEVICE_MAC_ADDRESS));
 
-				btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
-				btSocket.connect();
-				outStream = btSocket.getOutputStream();
-				inStream = btSocket.getInputStream();
-				bluetoothState = BluetoothState.CONNECTED;
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+			btSocket.connect();
+			outStream = btSocket.getOutputStream();
+			inStream = btSocket.getInputStream();
+			bluetoothState = BluetoothState.CONNECTED;
 		}
 	}
 
-	public static void send(byte[] data)
+	public static void send(byte[] data) throws IOException
 	{
 		Log.v("ArduinoPixels", "start sending. len = " + data.length);
-		try
+
+		if (bluetoothState == BluetoothState.CONNECTED)
 		{
-			if (bluetoothState == BluetoothState.CONNECTED)
+			bluetoothState = BluetoothState.SENDING;
+
+			int position = 0;
+			int maxBlockSize = 32;
+
+			while (position < data.length)
 			{
-				bluetoothState = BluetoothState.SENDING;
+				int blockSize = data.length - position;
 
-				int position = 0;
-				int maxBlockSize = 32;
-
-				while (position < data.length)
+				if (blockSize > maxBlockSize)
 				{
-					int blockSize = data.length - position;
-
-					if (blockSize > maxBlockSize)
-					{
-						blockSize = maxBlockSize;
-					}
-
-					outStream.write(blockSize);
-
-					Log.v("ArduinoPixels", "sended block size = " + blockSize);
-
-					int xorValueForBlock = 0;
-
-					for (int i = 0; i < blockSize; i++)
-					{
-						xorValueForBlock = (xorValueForBlock ^ (int) (data[position] & 0xff));
-						outStream.write(data[position]);
-						position++;
-					}
-
-					Log.v("ArduinoPixels", "sended block data");
-
-					// int t= inStream.read();
-
-					if (xorValueForBlock != (int) (inStream.read() & 0xff))
-					{
-						throw new IOException("incorrect xor value");
-					}
-					Log.v("ArduinoPixels", "recieved correct xor byte = " + xorValueForBlock);
-
+					blockSize = maxBlockSize;
 				}
-				outStream.write(0);
-				Log.v("ArduinoPixels", "sended end block");
 
-				bluetoothState = BluetoothState.CONNECTED;
+				outStream.write(blockSize);
+
+				Log.v("ArduinoPixels", "sended block size = " + blockSize);
+
+				int xorValueForBlock = 0;
+
+				for (int i = 0; i < blockSize; i++)
+				{
+					xorValueForBlock = (xorValueForBlock ^ (int) (data[position] & 0xff));
+					outStream.write(data[position]);
+					position++;
+				}
+
+				Log.v("ArduinoPixels", "sended block data");
+
+				// int t= inStream.read();
+
+				if (xorValueForBlock != (int) (inStream.read() & 0xff))
+				{
+					throw new IOException("incorrect xor value");
+				}
+				Log.v("ArduinoPixels", "recieved correct xor byte = " + xorValueForBlock);
+
 			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			outStream.write(0);
+			Log.v("ArduinoPixels", "sended end block");
+
+			bluetoothState = BluetoothState.CONNECTED;
 		}
 	}
 
-	public static void disconnect()
+	public static void disconnect() throws IOException
 	{
-		try
+		if (bluetoothState != BluetoothState.DICONNECTED)
 		{
-			if (bluetoothState != BluetoothState.DICONNECTED)
-			{
-				outStream.close();
-				btSocket.close();
-				bluetoothState = BluetoothState.DICONNECTED;
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			outStream.close();
+			btSocket.close();
+			bluetoothState = BluetoothState.DICONNECTED;
 		}
 	}
 

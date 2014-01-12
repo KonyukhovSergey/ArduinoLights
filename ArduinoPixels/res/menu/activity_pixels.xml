@@ -1,8 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_pick_bluetooth_device"
+        android:id="@+id/action_new_program"
         android:showAsAction="always"
-        android:title="Pick BTD"/>
+        android:title="new"/>
+    <item
+        android:id="@+id/action_pick_bluetooth_device"
+        android:showAsAction="never"
+        android:title="Pick bluetooth..."/>
 
 </menu>

@@ -52,7 +52,7 @@ public class ApplicationPreferencesBase
 
 	public void remove(String key)
 	{
-		prefences.edit().remove("KeyName").commit();
+		prefences.edit().remove(key).commit();
 	}
 
 	public List<String> names(String startsWith)
@@ -65,7 +65,7 @@ public class ApplicationPreferencesBase
 			
 			if (key.startsWith(startsWith))
 			{
-				names.add(key);
+				names.add(key.substring(startsWith.length()));
 			}
 		}
 

@@ -27,11 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ru.serjik.arduinopixels.ActivitySingleColor"
-            android:label="@string/title_activity_activity_single_color" >
-        </activity>
-        <activity
-            android:name="ru.serjik.arduinopixels.ActivityFormula"
+            android:name="ru.serjik.arduinopixels.ActivityProgram"
             android:label="@string/title_activity_activity_formula"
             android:windowSoftInputMode="adjustResize" >
         </activity>

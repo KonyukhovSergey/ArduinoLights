@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ActivityFormula" >
+    tools:context=".ActivityProgram" >
 
     <EditText
         android:id="@+id/edit_program"
@@ -28,6 +28,7 @@
             android:text="format" />
 
         <Button
+            android:id="@+id/button_compile_and_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
