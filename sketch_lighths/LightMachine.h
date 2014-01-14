@@ -2,13 +2,12 @@
 #define LIGHT_MACHINE_H
 
 #define STACK_SIZE	32
+#define MAX_VARIABLES_COUNT 64
 
 #include <math.h>
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <SerialClass.h>
-
-#define BYTE_CODE_OFFSET 3
 
 #define COMMAND_ADD	0x01
 #define COMMAND_SUB	0x02
@@ -33,27 +32,27 @@
 
 #define COMMAND_GREATER	0x15
 #define COMMAND_LOWER	0x16
+#define COMMAND_EQ		0x17
+#define COMMAND_NEQ		0x18
 
 struct LightMachine
 {
-  uint16_t len;
   uint16_t pos;
 
   float stackValues[STACK_SIZE];
+  
   uint32_t *stackInts;
   uint8_t stackPosition;
   uint8_t interuptCounter;
 
-  float variables[26];
+  float variables[MAX_VARIABLES_COUNT];
 
-  void init(uint16_t lenght)
+  void init()
   {
-    len = lenght + BYTE_CODE_OFFSET;
-
     stackPosition = 0;
     stackInts = (uint32_t*)stackValues;
 
-    for(int i = 0; i < 26; i++)
+    for(int i = 0; i < MAX_VARIABLES_COUNT; i++)
     {
       variables[i] = 0;
     }
@@ -108,9 +107,9 @@ struct LightMachine
 
   uint16_t execute(uint16_t startPosition)
   {
-    pos = startPosition + BYTE_CODE_OFFSET;
+    pos = startPosition;
 
-    while(pos < len)
+    while(true)
     {
       interuptCounter++;
 
@@ -126,6 +125,11 @@ struct LightMachine
 
       uint8_t b = EEPROM.read(pos);
       pos++;
+      
+      if(b == 0x00)
+      {
+      	break;
+      }
 
       if(b == 0xc0)
       {
@@ -135,13 +139,13 @@ struct LightMachine
 
       if(b & 0x40)
       {
-        push(variables[b & 0x1f]);
+        push(variables[b & 0x3f]);
         continue;
       }
 
       if(b & 0x80)
       {
-        variables[b & 0x1f] = pop();
+        variables[b & 0x3f] = pop();
         continue;
       }
 
@@ -163,6 +167,22 @@ struct LightMachine
         }
         break;
 
+      case COMMAND_EQ:
+        {
+          float rv = pop();
+          float lv = pop();
+          pushInt( fabs(lv - rv) < 0.00001 ? 1 : 0);
+        }
+        break;
+        
+      case COMMAND_NEQ:
+        {
+          float rv = pop();
+          float lv = pop();
+          pushInt( fabs(lv - rv) > 0.00001 ? 1 : 0);
+        }
+        break;
+        
       case COMMAND_ADD:
         {
           float rv = pop();
@@ -221,7 +241,7 @@ struct LightMachine
 
       case COMMAND_LOOP:
         {
-          return pos - BYTE_CODE_OFFSET;
+          return pos;
         }
 
       case COMMAND_SQRT:
@@ -257,7 +277,7 @@ struct LightMachine
         break;
       case COMMAND_CALL:
         {
-          uint32_t address = popInt() + BYTE_CODE_OFFSET;
+          uint32_t address = popInt();
           pushInt(pos);
           pos = address;
         }
@@ -271,13 +291,13 @@ struct LightMachine
 
       case COMMAND_JUMP:
         {
-          pos = popInt() + BYTE_CODE_OFFSET;
+          pos = popInt();
         }
         break;
 
       case COMMAND_JUMPZ:
         {
-          uint32_t address = popInt() + BYTE_CODE_OFFSET;
+          uint32_t address = popInt();
 
           if(popInt() == 0)
           {
@@ -287,11 +307,11 @@ struct LightMachine
         break;
 
       case COMMAND_END:
-        return pos - BYTE_CODE_OFFSET;
+        return pos;
       }
     }
 
-    return pos - BYTE_CODE_OFFSET;
+    return pos;
   }
 };
 

@@ -47,8 +47,10 @@ public class Tokenizer
 		add("\\*", TokenType.MUL_DIV);
 		add("\\/", TokenType.MUL_DIV);
 
-		add("\\<", TokenType.RELATION);
-		add("\\>", TokenType.RELATION);
+		add("<", TokenType.RELATION);
+		add(">", TokenType.RELATION);
+		add("==", TokenType.RELATION);
+		add("!=", TokenType.RELATION);
 
 		add("[0-9]*\\.[0-9]+", TokenType.CONST_FLOAT);
 		add("[0-9]+\\.", TokenType.CONST_FLOAT);

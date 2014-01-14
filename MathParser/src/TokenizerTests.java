@@ -36,6 +36,21 @@ public class TokenizerTests
 	}
 
 	@Test
+	public void testRelation() throws Exception
+	{
+		Tokenizer tokenizer = new Tokenizer();
+
+		tokenizer.tokenize("x<1;y>2;z==3;a!=b");
+		LinkedList<Token> tokens = tokenizer.getTokens();
+
+		assertEquals(15, tokens.size());
+		assertEquals(TokenType.RELATION, tokens.get(1).token);
+		assertEquals(TokenType.RELATION, tokens.get(5).token);
+		assertEquals(TokenType.RELATION, tokens.get(9).token);
+		assertEquals(TokenType.RELATION, tokens.get(13).token);
+	}
+	
+	@Test
 	public void testCos() throws Exception
 	{
 		Tokenizer tokenizer = new Tokenizer();

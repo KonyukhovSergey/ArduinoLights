@@ -41,8 +41,12 @@ public class ByteCodeGenerator
 
 	private static final int COMMAND_GREATER = 0x15;
 	private static final int COMMAND_LOWER = 0x16;
+	private static final int COMMAND_EQ = 0x17;
+	private static final int COMMAND_NEQ = 0x18;
 
 	private LinkedList<Token> tokens;
+
+	private Map<String, Integer> variables = new HashMap<String, Integer>();
 
 	private List<CallLabelPosition> callPositions = new ArrayList<CallLabelPosition>();
 	private Map<String, Integer> labels = new HashMap<String, Integer>();
@@ -50,7 +54,7 @@ public class ByteCodeGenerator
 
 	private ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
 	private final static byte[] zero4bytes = new byte[4];
-
+	
 	public ByteCodeGenerator(Tokenizer tokenizer) throws Exception
 	{
 		this.tokens = tokenizer.getTokens();
@@ -259,6 +263,18 @@ public class ByteCodeGenerator
 					baos.write(COMMAND_LOWER);
 					System.out.println("lower");
 					break;
+
+				case '=':
+					math_expression();
+					baos.write(COMMAND_EQ);
+					System.out.println("eq");
+					break;
+
+				case '!':
+					math_expression();
+					baos.write(COMMAND_NEQ);
+					System.out.println("neq");
+					break;
 			}
 
 		}
@@ -427,23 +443,36 @@ public class ByteCodeGenerator
 
 		if (tokens.pollFirst().token != TokenType.CLOSE_BRACE)
 		{
-			throw new Exception("'(' expected");
+			throw new Exception("')' expected");
 		}
 
 	}
 
-	// 10xvvvvv - pop vvvvv - variable index
-	private void writePopVariable(String sequence)
+	// 10vvvvvv - pop vvvvvv - variable index
+	private void writePopVariable(String sequence) throws Exception
 	{
-		int variableIndex = sequence.toLowerCase().charAt(0) - 'a';
-		baos.write(0x80 | variableIndex);
+		if (variables.containsKey(sequence) == false)
+		{
+			if (variables.size() > 63)
+			{
+				throw new Exception("too many variables. there are 64 variables maximum in the program.");
+			}
+			variables.put(sequence, variables.size());
+		}
+		baos.write(0x80 | variables.get(sequence));
 	}
 
-	// 01xvvvvv - push vvvvv - variable index
-	private void writePushVariable(String sequence)
+	// 01vvvvvv - push vvvvvv - variable index
+	private void writePushVariable(String sequence) throws Exception
 	{
-		int variableIndex = sequence.toLowerCase().charAt(0) - 'a';
-		baos.write(0x40 | variableIndex);
+		if (variables.containsKey(sequence))
+		{
+			baos.write(0x40 | variables.get(sequence));
+		}
+		else
+		{
+			throw new Exception("variable '" + sequence + "' is not defined");
+		}
 	}
 
 	private void writePushConstant(String sequence) throws Exception
