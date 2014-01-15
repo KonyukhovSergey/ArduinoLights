@@ -9,6 +9,8 @@
 #include <EEPROM.h>
 #include <SerialClass.h>
 
+#include "Screen.h"
+
 #define COMMAND_ADD	0x01
 #define COMMAND_SUB	0x02
 #define COMMAND_MUL	0x03
@@ -35,6 +37,8 @@
 #define COMMAND_EQ		0x17
 #define COMMAND_NEQ		0x18
 
+#define COMMAND_SET 0x19
+
 struct LightMachine
 {
   uint16_t pos;
@@ -44,11 +48,19 @@ struct LightMachine
   uint32_t *stackInts;
   uint8_t stackPosition;
   uint8_t interuptCounter;
+  uint16_t startPosition;
+  
+  Screen *screen;
 
   float variables[MAX_VARIABLES_COUNT];
 
-  void init()
+  void init(Screen *screen)
   {
+  	this->screen = screen;
+  	screen->clear(0, 0, 0);
+  	
+  	startPosition = 0;
+  	
     stackPosition = 0;
     stackInts = (uint32_t*)stackValues;
 
@@ -58,6 +70,8 @@ struct LightMachine
     }
 
     interuptCounter = 0;
+    
+    startPosition = execute();
   }
 
   float pop()
@@ -105,7 +119,7 @@ struct LightMachine
     return value;
   }
 
-  uint16_t execute(uint16_t startPosition)
+  uint16_t execute()
   {
     pos = startPosition;
 
@@ -124,12 +138,14 @@ struct LightMachine
       }
 
       uint8_t b = EEPROM.read(pos);
-      pos++;
-      
+
       if(b == 0x00)
       {
       	break;
       }
+      
+      pos++;
+      
 
       if(b == 0xc0)
       {
@@ -306,6 +322,17 @@ struct LightMachine
         }
         break;
 
+      case COMMAND_SET:
+        {
+          uint8_t b = pop();
+          uint8_t g = pop();
+          uint8_t r = pop();
+          uint8_t i = pop();
+          
+          screen->set(i, r, g, b);
+        }
+        break;
+        
       case COMMAND_END:
         return pos;
       }

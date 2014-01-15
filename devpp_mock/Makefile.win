@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/ARGB.o for_object/Message.o for_object/ModeAurora.o for_object/ModeBase.o for_object/ModePointsRGB.o for_object/ModeProg.o for_object/ModeSingleColor.o for_object/PointRGB.o for_object/Screen.o for_object/utils.o for_object/EEPROM.o
-LINKOBJ  = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/ARGB.o for_object/Message.o for_object/ModeAurora.o for_object/ModeBase.o for_object/ModePointsRGB.o for_object/ModeProg.o for_object/ModeSingleColor.o for_object/PointRGB.o for_object/Screen.o for_object/utils.o for_object/EEPROM.o
+OBJ      = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/DataReciever.o for_object/EEPROM.o
+LINKOBJ  = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/DataReciever.o for_object/EEPROM.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -mwindows -g3
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/sketch_lighths"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/sketch_lighths"
@@ -36,35 +36,8 @@ for_object/SerialClass.o: arduino_mock/SerialClass.cpp
 for_object/SPI.o: arduino_mock/SPI.cpp
 	$(CPP) -c arduino_mock/SPI.cpp -o for_object/SPI.o $(CXXFLAGS)
 
-for_object/ARGB.o: ../sketch_lighths/ARGB.cpp
-	$(CPP) -c ../sketch_lighths/ARGB.cpp -o for_object/ARGB.o $(CXXFLAGS)
-
-for_object/Message.o: ../sketch_lighths/Message.cpp
-	$(CPP) -c ../sketch_lighths/Message.cpp -o for_object/Message.o $(CXXFLAGS)
-
-for_object/ModeAurora.o: ../sketch_lighths/ModeAurora.cpp
-	$(CPP) -c ../sketch_lighths/ModeAurora.cpp -o for_object/ModeAurora.o $(CXXFLAGS)
-
-for_object/ModeBase.o: ../sketch_lighths/ModeBase.cpp
-	$(CPP) -c ../sketch_lighths/ModeBase.cpp -o for_object/ModeBase.o $(CXXFLAGS)
-
-for_object/ModePointsRGB.o: ../sketch_lighths/ModePointsRGB.cpp
-	$(CPP) -c ../sketch_lighths/ModePointsRGB.cpp -o for_object/ModePointsRGB.o $(CXXFLAGS)
-
-for_object/ModeProg.o: ../sketch_lighths/ModeProg.cpp
-	$(CPP) -c ../sketch_lighths/ModeProg.cpp -o for_object/ModeProg.o $(CXXFLAGS)
-
-for_object/ModeSingleColor.o: ../sketch_lighths/ModeSingleColor.cpp
-	$(CPP) -c ../sketch_lighths/ModeSingleColor.cpp -o for_object/ModeSingleColor.o $(CXXFLAGS)
-
-for_object/PointRGB.o: ../sketch_lighths/PointRGB.cpp
-	$(CPP) -c ../sketch_lighths/PointRGB.cpp -o for_object/PointRGB.o $(CXXFLAGS)
-
-for_object/Screen.o: ../sketch_lighths/Screen.cpp
-	$(CPP) -c ../sketch_lighths/Screen.cpp -o for_object/Screen.o $(CXXFLAGS)
-
-for_object/utils.o: ../sketch_lighths/utils.cpp
-	$(CPP) -c ../sketch_lighths/utils.cpp -o for_object/utils.o $(CXXFLAGS)
+for_object/DataReciever.o: ../sketch_lighths/DataReciever.cpp
+	$(CPP) -c ../sketch_lighths/DataReciever.cpp -o for_object/DataReciever.o $(CXXFLAGS)
 
 for_object/EEPROM.o: EEPROM.cpp
 	$(CPP) -c EEPROM.cpp -o for_object/EEPROM.o $(CXXFLAGS)

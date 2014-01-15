@@ -13,13 +13,15 @@ public class Program
 		try
 		{
 			// System.out.println(tokenizer.format("x=1;x=1.1;loop;r=255;"));
-			tokenizer.tokenize("t=t+0.01;" + "loop;" + "p=t;" + "call proc1;r = p;" + "p=t*2+1;" + "call proc1;g = p;"
-					+ "p=t*3+2;" + "call proc1;b=p;if b<10 then b=255; endif ;" + "end;proc1:;p = 25*sin(p)+25;d=x-p;p=255/(1+d*d);ret");
-			
+			tokenizer.tokenize("q=1;w=3;start_pos=25;loop;i=0;cicle:;set(i,255,i*5,255-i*5);i=i+1;if i<50 then goto cicle;endif;set(start_pos,255,255,255);start_pos=start_pos+1; if start_pos > 49 then start_pos=0; endif; end");
+			/*
+			 * loop;i=0;cicle_label:;set(i,255,i*5,255-i*5);i=i+1;if i<50 then goto cicle;endif;end
+			 */
+
 			System.out.println("");
-			
+
 			System.out.println(tokenizer.format());
-			
+
 			ByteCodeGenerator byteCodeGenerator = new ByteCodeGenerator(tokenizer);
 
 			System.out.println("decompiled code");
@@ -28,16 +30,15 @@ public class Program
 
 			System.out.println(Decompiler.decode(byteCode));
 
-			System.out.printf("Serial.set(\"\\x%02x", byteCode.length+1);
-			System.out.print("\\x04");
+			System.out.printf("Serial.set(\"\\x%02x", byteCode.length);
 
 			for (int i = 0; i < byteCode.length; i++)
 			{
 				System.out.printf("\\x%02x", byteCode[i]);
 			}
 
-			System.out.println("\", "+((int) (byteCode.length + 1)) + " + 1);");
-			System.out.println("size = " + ((int) (byteCode.length + 1)));
+			System.out.println("\", " + ((int) (byteCode.length)) + " + 2);");
+			System.out.println("size = " + ((int) (byteCode.length)));
 
 			//
 			// // tokenizer.tokenize(" sin(x) * (1.4 + var_12) ");
