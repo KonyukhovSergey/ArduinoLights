@@ -1,6 +1,44 @@
 that is only wtat i want.
 now is other scecification. soo simple.
 
+float get(x, y)
+{
+	float z;
+	z = x + y;
+	return z * 2;
+}
+
+call form:
+
+    push_prog_position;
+	push_stack_position;
+	variable_position = stack_position;
+	push_expression_results;
+	push_local_variables;
+	
+	function bytecode
+		push v0;
+		push v1;
+		add;
+		pop v2;
+		push v2;
+		push 2
+		mul;
+	
+	return:
+		stack_position = variable_position
+		pop_variable_position;
+		pop_prog_position;
+		
+		
+		
+	
+	
+	 
+
+
+call opcode params count
+
 structure
 
 	void identifier(int identifier, ..., float identifier){}	
