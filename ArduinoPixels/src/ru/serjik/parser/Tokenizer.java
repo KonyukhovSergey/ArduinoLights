@@ -47,8 +47,10 @@ public class Tokenizer
 		add("\\*", TokenType.MUL_DIV);
 		add("\\/", TokenType.MUL_DIV);
 
-		add("\\<", TokenType.RELATION);
-		add("\\>", TokenType.RELATION);
+		add("<", TokenType.RELATION);
+		add(">", TokenType.RELATION);
+		add("==", TokenType.RELATION);
+		add("!=", TokenType.RELATION);
 
 		add("[0-9]*\\.[0-9]+", TokenType.CONST_FLOAT);
 		add("[0-9]+\\.", TokenType.CONST_FLOAT);
@@ -61,7 +63,6 @@ public class Tokenizer
 		add("\\=", TokenType.ASSIGN);
 		add("\\,", TokenType.COMMA);
 
-		predefinedKeywords.put("sin", TokenType.SYSTEM_FUNCTION);
 		predefinedKeywords.put("sin", TokenType.SYSTEM_FUNCTION);
 		predefinedKeywords.put("cos", TokenType.SYSTEM_FUNCTION);
 		predefinedKeywords.put("exp", TokenType.SYSTEM_FUNCTION);

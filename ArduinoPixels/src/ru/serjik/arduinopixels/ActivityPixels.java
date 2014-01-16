@@ -57,7 +57,26 @@ public class ActivityPixels extends Activity
 		{
 			String name = "// " + android.text.format.DateFormat.format("dd.MM.yyyy HH:mm:ss", new java.util.Date());
 
-			app.cfg.set(name, "t=t+0.1;loop;r=255;g=255;b=255;end");
+			String defaultProgram = "\n// keywords: loop, call label, ret, goto label, if ... then ... endif; end;\n"+ 
+	                   "// math: sin(x), cos(x), exp(x), sqrt(x), pow(x, y)\n" +
+	                   "// label: 'identifier:'\n" +
+	                   "// system: delay(milliseconds); rnd() returned [0..1]; set(i,r,g,b);\n" +
+	                   "// loop: one draw cicle\n" +
+	                   "pos = 0;color = 0;" +
+	                   "r = 255; g = 0; b = 0;" +
+	                   "loop;" +
+	                   "set(pos,r,g,b);delay(1);" +
+	                   "pos=pos+1;" +
+	                   "if pos > 49 then pos = 0;" +
+	                   "color=color+1;if color>3 then color = 0;endif;"+
+	                   "if color==0 then r=0;b=0;b=255;endif;" +
+	                   "if color==1 then r=0;g=255;b=0;endif;" +
+	                   "if color==2 then r=255;g=0;b=0;endif;" +
+	                   "if color==3 then r=255;g=255;b=255;endif;" +
+	                   "endif;" +
+	                   "end";
+			
+			app.cfg.set(name, defaultProgram);
 			open(name);
 			return true;
 		}

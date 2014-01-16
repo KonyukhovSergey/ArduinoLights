@@ -1,7 +1,7 @@
 #ifndef LIGHT_MACHINE_H
 #define LIGHT_MACHINE_H
 
-#define STACK_SIZE	32
+#define STACK_SIZE	48
 #define MAX_VARIABLES_COUNT 64
 
 #include <math.h>
@@ -11,56 +11,57 @@
 
 #include "Screen.h"
 
-#define COMMAND_ADD	0x01
-#define COMMAND_SUB	0x02
-#define COMMAND_MUL	0x03
-#define COMMAND_DIV	0x04
-#define COMMAND_NEG	0x05
-#define COMMAND_SIN	0x06
-#define COMMAND_COS	0x07
-#define COMMAND_EXP	0x08
-#define COMMAND_LOOP	0x09
-#define COMMAND_SQRT 	0x0a
-#define COMMAND_DELAY 	0x0b
-#define COMMAND_TIME	0x0c
-#define COMMAND_RND	0x0d
-#define COMMAND_POW 	0x0e
-#define COMMAND_ABS	0x0f
-#define COMMAND_CALL	0x10
-#define COMMAND_RET	0x11
-#define COMMAND_JUMP	0x12
-#define COMMAND_JUMPZ	0x13
-#define COMMAND_END	0x14
+#define COMMAND_ADD     0x01
+#define COMMAND_SUB     0x02
+#define COMMAND_MUL     0x03
+#define COMMAND_DIV     0x04
+#define COMMAND_NEG     0x05
+#define COMMAND_SIN     0x06
+#define COMMAND_COS     0x07
+#define COMMAND_EXP     0x08
+#define COMMAND_LOOP    0x09
+#define COMMAND_SQRT    0x0a
+#define COMMAND_DELAY   0x0b
+#define COMMAND_TIME    0x0c
+#define COMMAND_RND     0x0d
+#define COMMAND_POW     0x0e
+#define COMMAND_ABS     0x0f
+#define COMMAND_CALL    0x10
+#define COMMAND_RET     0x11
+#define COMMAND_JUMP    0x12
+#define COMMAND_JUMPZ   0x13
+#define COMMAND_END     0x14
 
-#define COMMAND_GREATER	0x15
-#define COMMAND_LOWER	0x16
-#define COMMAND_EQ		0x17
-#define COMMAND_NEQ		0x18
+#define COMMAND_GREATER 0x15
+#define COMMAND_LOWER   0x16
+#define COMMAND_EQ      0x17
+#define COMMAND_NEQ     0x18
 
-#define COMMAND_SET 0x19
+#define COMMAND_SET     0x19
 
 struct LightMachine
 {
   uint16_t pos;
 
   float stackValues[STACK_SIZE];
-  
+  uint8_t prog[1024];
+
   uint32_t *stackInts;
   uint8_t stackPosition;
   uint8_t interuptCounter;
   uint16_t startPosition;
-  
+
   Screen *screen;
 
   float variables[MAX_VARIABLES_COUNT];
 
   void init(Screen *screen)
   {
-  	this->screen = screen;
-  	screen->clear(0, 0, 0);
-  	
-  	startPosition = 0;
-  	
+    this->screen = screen;
+    screen->clear(0, 0, 0);
+
+    startPosition = 0;
+
     stackPosition = 0;
     stackInts = (uint32_t*)stackValues;
 
@@ -68,9 +69,14 @@ struct LightMachine
     {
       variables[i] = 0;
     }
+    
+    for(int i = 0; i < 1024; i ++)
+    {
+      prog[i] = EEPROM.read(i);
+    }
 
     interuptCounter = 0;
-    
+
     startPosition = execute();
   }
 
@@ -109,10 +115,15 @@ struct LightMachine
     float value;
     uint8_t *ptr = (uint8_t*)&value;
 
-    *(ptr + 0) = EEPROM.read(pos + 3);
-    *(ptr + 1) = EEPROM.read(pos + 2);
-    *(ptr + 2) = EEPROM.read(pos + 1);
-    *(ptr + 3) = EEPROM.read(pos + 0);
+//    *(ptr + 0) = EEPROM.read(pos + 3);
+//    *(ptr + 1) = EEPROM.read(pos + 2);
+//    *(ptr + 2) = EEPROM.read(pos + 1);
+//    *(ptr + 3) = EEPROM.read(pos + 0);
+
+    *(ptr + 0) = prog[pos + 3];
+    *(ptr + 1) = prog[pos + 2];
+    *(ptr + 2) = prog[pos + 1];
+    *(ptr + 3) = prog[pos + 0];
 
     pos += 4;
 
@@ -137,15 +148,16 @@ struct LightMachine
         }
       }
 
-      uint8_t b = EEPROM.read(pos);
+      //uint8_t b = EEPROM.read(pos);
+      uint8_t b = prog[pos];
 
       if(b == 0x00)
       {
-      	break;
+        break;
       }
-      
+
       pos++;
-      
+
 
       if(b == 0xc0)
       {
@@ -169,6 +181,8 @@ struct LightMachine
       {
       case COMMAND_GREATER:
         {
+//        	stackInts[stackPosition-2] = stackInts[stackPosition-2] > stackInts[stackPosition-1]? 1 : 0;
+//        	stackPosition--;
           float rv = pop();
           float lv = pop();
           pushInt(lv > rv? 1 : 0);
@@ -177,6 +191,8 @@ struct LightMachine
 
       case COMMAND_LOWER:
         {
+//        	stackInts[stackPosition-2] = stackInts[stackPosition-2] < stackInts[stackPosition-1]? 1 : 0;
+//        	stackPosition--;
           float rv = pop();
           float lv = pop();
           pushInt(lv < rv? 1 : 0);
@@ -190,7 +206,7 @@ struct LightMachine
           pushInt( fabs(lv - rv) < 0.00001 ? 1 : 0);
         }
         break;
-        
+
       case COMMAND_NEQ:
         {
           float rv = pop();
@@ -198,9 +214,11 @@ struct LightMachine
           pushInt( fabs(lv - rv) > 0.00001 ? 1 : 0);
         }
         break;
-        
+
       case COMMAND_ADD:
         {
+//        	stackValues[stackPosition-2] = stackValues[stackPosition-2] + stackValues[stackPosition-1];
+//        	stackPosition--;
           float rv = pop();
           float lv = pop();
           push(lv + rv);
@@ -328,11 +346,15 @@ struct LightMachine
           uint8_t g = pop();
           uint8_t r = pop();
           uint8_t i = pop();
-          
+
           screen->set(i, r, g, b);
         }
         break;
         
+      case COMMAND_RND:
+        push((float)random(999999)/999999.0f);
+      	break;
+
       case COMMAND_END:
         return pos;
       }
@@ -343,6 +365,7 @@ struct LightMachine
 };
 
 #endif
+
 
 
 

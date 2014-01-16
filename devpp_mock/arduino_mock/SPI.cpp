@@ -1,4 +1,5 @@
 #include "SPI.h"
+#include <stdio.h>
 
 SPIClass::SPIClass(int size)
 {
@@ -33,6 +34,9 @@ void SPIClass::transfer(int byte)
 	}
 }
 
+int count=0;
+int ticks=GetTickCount();
+
 void SPIClass::draw()
 {
 	for(int i = 0; i < SPI.len / 3; i++)
@@ -59,6 +63,18 @@ void SPIClass::draw()
 		SetPixel(hdc, i * 4 + 13, 12, cr);
 		SetPixel(hdc, i * 4 + 13, 13, cr);
 	}
+	
+	count++;
+	
+	if(GetTickCount()-ticks >1000)
+	{
+		char str[16];
+		sprintf(str,"%d",count);
+		count=0;
+		TextOutA(hdc,300,1,str,strlen(str));
+		ticks=GetTickCount();
+	}
+	
 }
 
 

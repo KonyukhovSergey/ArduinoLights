@@ -13,10 +13,27 @@ public class Program
 		try
 		{
 			// System.out.println(tokenizer.format("x=1;x=1.1;loop;r=255;"));
-			tokenizer.tokenize("q=1;w=3;start_pos=25;loop;i=0;cicle:;set(i,255,i*5,255-i*5);i=i+1;if i<50 then goto cicle;endif;set(start_pos,255,255,255);start_pos=start_pos+1; if start_pos > 49 then start_pos=0; endif; end");
-			/*
-			 * loop;i=0;cicle_label:;set(i,255,i*5,255-i*5);i=i+1;if i<50 then goto cicle;endif;end
-			 */
+			//tokenizer.tokenize("q=255;w=3;start_pos=25;loop;i=0;cicle:;set(i,q,q,q);i=i+1;if i<50 then goto cicle;endif;set(start_pos,q,q,q);start_pos=start_pos+1; if start_pos > 49 then start_pos=0; endif; end");
+			tokenizer.tokenize("// keywords: loop, call label, ret, goto label, if ... then ... endif; end;\n"+ 
+			                   "// math: sin(x), cos(x), exp(x), sqrt(x), pow(x, y)\n" +
+			                   "// label: 'identifier:'\n" +
+			                   "// system: delay(milliseconds); rnd() returned [0..1]; set(i,r,g,b);\n" +
+			                   "// loop: one draw cicle\n" +
+			                   "pos = 0;color = 0;" +
+			                   "r = 255; g = 0; b = 0;" +
+			                   "loop;" +
+			                   "set(pos,r,g,b);delay(1);" +
+			                   "pos=pos+1;" +
+			                   "if pos > 49 then pos = 0;" +
+			                   "color=color+1;if color>3 then color = 0;endif;"+
+			                   "if color==0 then r=0;b=0;b=255;endif;" +
+			                   "if color==1 then r=0;g=255;b=0;endif;" +
+			                   "if color==2 then r=255;g=0;b=0;endif;" +
+			                   "if color==3 then r=255;g=255;b=255;endif;" +
+			                   "endif;" +
+			                   "end");
+			 
+			 
 
 			System.out.println("");
 

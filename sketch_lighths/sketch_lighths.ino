@@ -1,43 +1,14 @@
-#include <EEPROM.h>
 #include <SPI.h>
+#include <EEPROM.h>
 
+#include "DataReciever.h"
+#include "LightMachine.h"
 #include "Screen.h"
-#include "Message.h"
 
-#include "ModeSingleColor.h"
-#include "ModePointsRGB.h"
-#include "ModeAurora.h"
-#include "ModeProg.h"
+DataReciever dataReciever;
+LightMachine lightMachine;
 
 Screen screen;
-Message msg;
-#include <stdio.h>
-
-drawFunction draw;
-
-void updateMode()
-{
-  draw = 0;
-
-  switch (EEPROM.read(2))
-  {
-  case 0x01:
-    draw = ((ModeSingleColor*)data)->init();
-    break;
-
-  case 0x02:
-    draw = ((ModePointsRGB*)data)->init();
-    break;
-
-  case 0x03:
-    draw = ((ModeAurora*)data)->init();
-    break;
-
-  case 0x04:
-    draw = ((ModeProg*)data)->init();
-    break;
-  }
-}
 
 void setup() 
 {
@@ -47,26 +18,23 @@ void setup()
   SPI.setDataMode(SPI_MODE0); 
   SPI.setClockDivider(SPI_CLOCK_DIV16);
   delay(1);
-  msg.init();
-  updateMode();
+  randomSeed(analogRead(0));
+  dataReciever.init();
+  lightMachine.init(&screen);
 }
 
 void loop() 
 {
-  if(msg.isMessage() > 0)
+  if(dataReciever.data() > 0)
   {
-    updateMode();
+    lightMachine.init(&screen);
   }
 
-  if(draw != 0)
-  {
-    draw(screen);
-  }
+  lightMachine.execute();
 
-  screen.sendToModules();
+  screen.send();
 
-  delay(1);
+  // delay(1);
 }
-
 
 

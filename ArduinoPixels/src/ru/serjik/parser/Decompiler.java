@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Decompiler
 {
 	private static final String[] functions = { "", "add", "sub", "mul", "div", "neg", "sin", "cos", "exp", "loop",
-			"sqrt", "delay", "time", "rnd", "pow", "abs", "call", "ret", "jump", "jumpz", "end", "greater", "lower" };
+			"sqrt", "delay", "time", "rnd", "pow", "abs", "call", "ret", "jump", "jumpz", "end", "greater", "lower","eq","neq","set" };
 
 	public static String decode(byte[] bc) throws Exception
 	{
@@ -33,17 +33,17 @@ public class Decompiler
 
 			if ((b & (byte) 0x40) > 0)
 			{
-				sb.append("" + pos + " " + "push ");
-				sb.append("" + (char) ('a' + (char) (b & 0x1f)));
-				sb.append('\n');
+				sb.append("" + pos + " " + "push v[");
+				sb.append("" + (int) ((b & 0x3f)));
+				sb.append("]\n");
 				continue;
 			}
 
 			if ((b & 0x80) > 0)
 			{
-				sb.append("" + pos + " " + "pop ");
-				sb.append("" + (char) ('a' + (char) (b & 0x1f)));
-				sb.append('\n');
+				sb.append("" + pos + " " + "pop v[");
+				sb.append("" + (int) ((b & 0x3f)));
+				sb.append("]\n");
 				continue;
 			}
 
