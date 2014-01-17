@@ -97,7 +97,7 @@ public class ByteCodeGenerator
 		}
 
 		for (EndIfPosition endIfPosition : endIfPositions)
-			{
+		{
 			writeIntToArray(code, endIfPosition.ifPosition, endIfPosition.endIfPosition);
 		}
 
@@ -140,36 +140,36 @@ public class ByteCodeGenerator
 
 		switch (token.token)
 		{
-			case SYSTEM_FUNCTION:
-				function(token);
-				break;
+		case SYSTEM_FUNCTION:
+			function(token);
+			break;
 
-			case IDENTIFIER:
-				if (tokens.pollFirst().token != TokenType.ASSIGN)
-				{
-					throw new Exception("assign token expected '" + token.sequence + "'");
-				}
+		case IDENTIFIER:
+			if (tokens.pollFirst().token != TokenType.ASSIGN)
+			{
+				throw new Exception("assign token expected '" + token.sequence + "'");
+			}
 
-				expression();
+			expression();
 
-				writePopVariable(token.sequence);
-				System.out.println("pop " + token.sequence);
-				break;
+			writePopVariable(token.sequence);
+			System.out.println("pop " + token.sequence);
+			break;
 
-			case KEYWORD:
-				return keyword(token);
+		case KEYWORD:
+			return keyword(token);
 
-			case LABEL:
-				if (labels.containsKey(token.sequence))
-				{
-					throw new Exception("the '" + token.sequence + "' is defined already");
-				}
+		case LABEL:
+			if (labels.containsKey(token.sequence))
+			{
+				throw new Exception("the '" + token.sequence + "' is defined already");
+			}
 
-				labels.put(token.sequence, baos.size());
-				break;
+			labels.put(token.sequence, baos.size());
+			break;
 
-			default:
-				throw new Exception("function or variable expected");
+		default:
+			throw new Exception("function or variable expected");
 		}
 		return true;
 	}
@@ -196,7 +196,7 @@ public class ByteCodeGenerator
 			}
 
 			callPositions.add(new CallLabelPosition(baos.size() + 1, labelToken.sequence));
-			writePushConstant("0.0");
+			writePushFloat("0.0");
 			baos.write(COMMAND_CALL);
 			System.out.println(token.sequence + " " + labelToken.sequence);
 		}
@@ -218,7 +218,7 @@ public class ByteCodeGenerator
 
 			int pos = baos.size() + 1;
 
-			writePushConstant("0.0");
+			writePushFloat("0.0");
 
 			baos.write(COMMAND_JUMPZ);
 
@@ -240,7 +240,7 @@ public class ByteCodeGenerator
 			}
 
 			callPositions.add(new CallLabelPosition(baos.size() + 1, labelToken.sequence));
-			writePushConstant("0.0");
+			writePushFloat("0.0");
 			baos.write(COMMAND_JUMP);
 			System.out.println("goto " + token.sequence);
 		}
@@ -260,29 +260,29 @@ public class ByteCodeGenerator
 
 			switch (tokens.pollFirst().sequence.charAt(0))
 			{
-				case '>':
-					math_expression();
-					baos.write(COMMAND_GREATER);
-					System.out.println("greater");
-					break;
+			case '>':
+				math_expression();
+				baos.write(COMMAND_GREATER);
+				System.out.println("greater");
+				break;
 
-				case '<':
-					math_expression();
-					baos.write(COMMAND_LOWER);
-					System.out.println("lower");
-					break;
+			case '<':
+				math_expression();
+				baos.write(COMMAND_LOWER);
+				System.out.println("lower");
+				break;
 
-				case '=':
-					math_expression();
-					baos.write(COMMAND_EQ);
-					System.out.println("eq");
-					break;
+			case '=':
+				math_expression();
+				baos.write(COMMAND_EQ);
+				System.out.println("eq");
+				break;
 
-				case '!':
-					math_expression();
-					baos.write(COMMAND_NEQ);
-					System.out.println("neq");
-					break;
+			case '!':
+				math_expression();
+				baos.write(COMMAND_NEQ);
+				System.out.println("neq");
+				break;
 			}
 
 		}
@@ -302,17 +302,17 @@ public class ByteCodeGenerator
 
 			switch (tokens.pollFirst().sequence.charAt(0))
 			{
-				case '+':
-					term();
-					baos.write(COMMAND_ADD);
-					System.out.println("add");
-					break;
+			case '+':
+				term();
+				baos.write(COMMAND_ADD);
+				System.out.println("add");
+				break;
 
-				case '-':
-					term();
-					baos.write(COMMAND_SUB);
-					System.out.println("sub");
-					break;
+			case '-':
+				term();
+				baos.write(COMMAND_SUB);
+				System.out.println("sub");
+				break;
 			}
 		}
 	}
@@ -329,17 +329,17 @@ public class ByteCodeGenerator
 			}
 			switch (tokens.pollFirst().sequence.charAt(0))
 			{
-				case '*':
-					factor();
-					baos.write(COMMAND_MUL);
-					System.out.println("mul");
-					break;
+			case '*':
+				factor();
+				baos.write(COMMAND_MUL);
+				System.out.println("mul");
+				break;
 
-				case '/':
-					factor();
-					baos.write(COMMAND_DIV);
-					System.out.println("div");
-					break;
+			case '/':
+				factor();
+				baos.write(COMMAND_DIV);
+				System.out.println("div");
+				break;
 			}
 		}
 	}
@@ -357,10 +357,16 @@ public class ByteCodeGenerator
 		}
 		else
 		{
-			if (token.token == TokenType.CONST_FLOAT || token.token == TokenType.CONST_INTEGER)
+			if (token.token == TokenType.CONST_FLOAT)
 			{
-				writePushConstant(token.sequence);
-				System.out.println("push " + token.sequence);
+				writePushFloat(token.sequence);
+				System.out.println("push float " + token.sequence);
+			}
+
+			if (token.token == TokenType.CONST_INTEGER)
+			{
+				writePushInt(token.sequence);
+				System.out.println("push int " + token.sequence);
 			}
 
 			if (token.token == TokenType.IDENTIFIER)
@@ -503,11 +509,41 @@ public class ByteCodeGenerator
 		}
 	}
 
-	private void writePushConstant(String sequence) throws Exception
+	// private void writePushConstant(String sequence) throws Exception
+	// {
+	// baos.write(0xc0);
+	// DataOutputStream dos = new DataOutputStream(baos);
+	// dos.writeFloat(Float.parseFloat(sequence));
+	// }
+
+	private void writePushFloat(String sequence) throws Exception
 	{
 		baos.write(0xc0);
 		DataOutputStream dos = new DataOutputStream(baos);
 		dos.writeFloat(Float.parseFloat(sequence));
+	}
+
+	private void writePushInt(String sequence) throws Exception
+	{
+		int value = Integer.parseInt(sequence);
+		
+		if (value < 256)
+		{
+			baos.write(0xc1);
+			baos.write(value);
+		}
+		else if (value < 65536)
+		{
+			baos.write(0xc2);
+			DataOutputStream dos = new DataOutputStream(baos);
+			dos.writeShort(value);
+		}
+		else
+		{
+			baos.write(0xc3);
+			DataOutputStream dos = new DataOutputStream(baos);
+			dos.writeInt(value);
+		}
 	}
 
 	private class CallLabelPosition

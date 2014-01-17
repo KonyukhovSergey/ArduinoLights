@@ -7,7 +7,8 @@ import java.io.IOException;
 public class Decompiler
 {
 	private static final String[] functions = { "", "add", "sub", "mul", "div", "neg", "sin", "cos", "exp", "loop",
-			"sqrt", "delay", "time", "rnd", "pow", "abs", "call", "ret", "jump", "jumpz", "end", "greater", "lower","eq","neq","set" };
+			"sqrt", "delay", "time", "rnd", "pow", "abs", "call", "ret", "jump", "jumpz", "end", "greater", "lower",
+			"eq", "neq", "set" };
 
 	public static String decode(byte[] bc) throws Exception
 	{
@@ -24,7 +25,34 @@ public class Decompiler
 
 			if (b == (byte) 0xc0)
 			{
-				sb.append("" + pos + " " + "push ");
+				sb.append("" + pos + " " + "push float ");
+				sb.append(dis.readFloat() + " ");
+				pos += 4;
+				sb.append('\n');
+				continue;
+			}
+
+			if (b == (byte) 0xc1)
+			{
+				sb.append("" + pos + " " + "push byte ");
+				sb.append((int)(0xff&dis.readByte()) + " ");
+				pos += 1;
+				sb.append('\n');
+				continue;
+			}
+
+			if (b == (byte) 0xc2)
+			{
+				sb.append("" + pos + " " + "push short ");
+				sb.append(dis.readShort() + " ");
+				pos += 2;
+				sb.append('\n');
+				continue;
+			}
+
+			if (b == (byte) 0xc3)
+			{
+				sb.append("" + pos + " " + "push int ");
 				sb.append(dis.readInt() + " ");
 				pos += 4;
 				sb.append('\n');
@@ -53,7 +81,7 @@ public class Decompiler
 				sb.append('\n');
 				continue;
 			}
-			
+
 			throw new Exception("incorrect code " + b);
 		}
 

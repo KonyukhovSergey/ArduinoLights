@@ -7,6 +7,12 @@ byte code:
  01xvvvvv 0x40 - push vvvvv - variable index
  10xvvvvv 0x80 - pop  vvvvv - variable index 
 
+ 0001vvvv vvvv vvvv - call v... - adress
+ 0010vvvv vvvv vvvv - goto
+ 0011vvvv vvvv vvvv - jump if zero
+
+
+
  00cccccc - command
  01 add
  02 sub

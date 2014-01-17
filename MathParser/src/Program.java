@@ -25,11 +25,14 @@ public class Program
 			                   "set(pos,r,g,b);delay(1);" +
 			                   "pos=pos+1;" +
 			                   "if pos > 49 then pos = 0;" +
-			                   "color=color+1;if color>3 then color = 0;endif;"+
+			                   "color=color+1;if color>6 then color = 0;endif;"+
 			                   "if color==0 then r=0;b=0;b=255;endif;" +
 			                   "if color==1 then r=0;g=255;b=0;endif;" +
 			                   "if color==2 then r=255;g=0;b=0;endif;" +
-			                   "if color==3 then r=255;g=255;b=255;endif;" +
+			                   "if color==3 then r=255;g=255;b=0;endif;" +
+			                   "if color==4 then r=255;g=0;b=255;endif;" +
+			                   "if color==5 then r=0;g=255;b=255;endif;" +
+			                   "if color==6 then r=255;g=255;b=255;endif;" +
 			                   "endif;" +
 			                   "end");
 			 
