@@ -15,8 +15,8 @@ public class Tokenizer
 	{
 		public final TokenType token;
 		public final String sequence;
-		public final int beginPosition;
-		public final int endPosition;
+		public int beginPosition;
+		public int endPosition;
 
 		public Token(TokenType token, String sequence, int begin, int end)
 		{
@@ -29,6 +29,12 @@ public class Tokenizer
 
 			System.out.println(sequence + " " + token);
 		}
+
+		public int length()
+		{
+			return endPosition - beginPosition;
+		}
+
 	}
 
 	public Tokenizer()
@@ -163,83 +169,95 @@ public class Tokenizer
 		{
 			switch (token.token)
 			{
-				case ADD_SUB:
-				case MUL_DIV:
-				case ASSIGN:
-				case RELATION:
-					sb.append(" ");
-					sb.append(token.sequence);
+			case ADD_SUB:
+			case MUL_DIV:
+			case ASSIGN:
+			case RELATION:
+				sb.append(" ");
 
-					if (token.sequence.equals("-"))
+				addTokenToStringBuilder(sb, token);
+
+				if (token.sequence.equals("-"))
+				{
+					if (getTokens().indexOf(token) > 0)
 					{
-						if (getTokens().indexOf(token) > 0)
-						{
-							Token prevToken = getTokens().get(getTokens().indexOf(token) - 1);
+						Token prevToken = getTokens().get(getTokens().indexOf(token) - 1);
 
-							if (prevToken.token == TokenType.CONST_FLOAT || prevToken.token == TokenType.CONST_INTEGER
-									|| prevToken.token == TokenType.IDENTIFIER)
-							{
-								sb.append(" ");
-							}
+						if (prevToken.token == TokenType.CONST_FLOAT || prevToken.token == TokenType.CONST_INTEGER
+								|| prevToken.token == TokenType.IDENTIFIER)
+						{
+							sb.append(" ");
 						}
 					}
-					else
-					{
-						sb.append(" ");
-					}
-					break;
-
-				case COMMENT:
-				case SEMICOLON:
-					sb.append(token.sequence);
-					sb.append("\n" + ident);
-					break;
-
-				case COMMA:
-					sb.append(token.sequence);
-					sb.append(' ');
-					break;
-
-				case LABEL:
-					sb.append("\n" + ident);
-					sb.append(token.sequence);
-					sb.append(":");
-					break;
-
-				case KEYWORD:
-				{
-					if (token.sequence.equals("if"))
-					{
-						ident = ident + "  ";
-						sb.append(token.sequence + " ");
-					}
-					else if (token.sequence.equals("then"))
-					{
-						sb.append(" " + token.sequence + "\n" + ident);
-					}
-					else if (token.sequence.equals("endif"))
-					{
-						ident = ident.substring(0, ident.length() - 2);
-						sb.setLength(sb.length() - 2);
-						sb.append(token.sequence);
-					}
-					else if (token.sequence.equals("loop") || token.sequence.equals("ret") || token.sequence.equals("end"))
-					{
-						sb.append(token.sequence);
-					}
-					else
-					{
-						sb.append(token.sequence + " ");
-					}
 				}
-					break;
+				else
+				{
+					sb.append(" ");
+				}
+				break;
 
-				default:
-					sb.append(token.sequence);
-					break;
+			case COMMENT:
+			case SEMICOLON:
+				addTokenToStringBuilder(sb, token);
+				sb.append("\n" + ident);
+				break;
+
+			case COMMA:
+				addTokenToStringBuilder(sb, token);
+				sb.append(' ');
+				break;
+
+			case LABEL:
+				sb.append("\n" + ident);
+				addTokenToStringBuilder(sb, token);
+				sb.append(":");
+				break;
+
+			case KEYWORD:
+			{
+				if (token.sequence.equals("if"))
+				{
+					ident = ident + "  ";
+					addTokenToStringBuilder(sb, token);
+					sb.append(" ");
+				}
+				else if (token.sequence.equals("then"))
+				{
+					sb.append(" ");
+					addTokenToStringBuilder(sb, token);
+					sb.append("\n" + ident);
+				}
+				else if (token.sequence.equals("endif"))
+				{
+					ident = ident.substring(0, ident.length() - 2);
+					sb.setLength(sb.length() - 2);
+					addTokenToStringBuilder(sb, token);
+				}
+				else if (token.sequence.equals("loop") || token.sequence.equals("ret") || token.sequence.equals("end"))
+				{
+					addTokenToStringBuilder(sb, token);
+				}
+				else
+				{
+					addTokenToStringBuilder(sb, token);
+					sb.append(" ");
+				}
+			}
+				break;
+
+			default:
+				addTokenToStringBuilder(sb, token);
+				break;
 			}
 		}
 		return sb.toString();
+	}
+
+	private static void addTokenToStringBuilder(StringBuilder sb, Token token)
+	{
+		token.beginPosition = sb.length();
+		sb.append(token.sequence);
+		token.endPosition = sb.length();
 	}
 
 	public LinkedList<Token> getTokens()
@@ -264,21 +282,6 @@ public class Tokenizer
 
 	public enum TokenType
 	{
-		CONST_INTEGER,
-		CONST_FLOAT,
-		IDENTIFIER,
-		KEYWORD,
-		OPEN_BRACE,
-		CLOSE_BRACE,
-		LABEL,
-		SYSTEM_FUNCTION,
-		ADD_SUB,
-		MUL_DIV,
-		SEMICOLON,
-		ASSIGN,
-		COMMA,
-		COMMENT,
-		WHITE_SPACE,
-		RELATION,
+		CONST_INTEGER, CONST_FLOAT, IDENTIFIER, KEYWORD, OPEN_BRACE, CLOSE_BRACE, LABEL, SYSTEM_FUNCTION, ADD_SUB, MUL_DIV, SEMICOLON, ASSIGN, COMMA, COMMENT, WHITE_SPACE, RELATION,
 	}
 }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import ru.serjik.parser.ByteCodeGenerator;
+import ru.serjik.parser.SourceColorFormatter;
 import ru.serjik.parser.Tokenizer;
 import android.os.Bundle;
 import android.os.Looper;
@@ -74,7 +75,7 @@ public class ActivityProgram extends Activity
 	protected void onResume()
 	{
 		isDeleteSelected = false;
-
+		onFormatClick(null);
 		super.onResume();
 	}
 
@@ -110,7 +111,7 @@ public class ActivityProgram extends Activity
 		{
 			Tokenizer tokenizer = new Tokenizer();
 			tokenizer.tokenize(getProg());
-			editProg.setText(tokenizer.format());
+			editProg.setText(SourceColorFormatter.format(tokenizer));
 		}
 		catch (Exception e)
 		{
@@ -124,7 +125,7 @@ public class ActivityProgram extends Activity
 		{
 			Tokenizer tokenizer = new Tokenizer();
 			tokenizer.tokenize(getProg());
-			editProg.setText(tokenizer.format());
+			//editProg.setText(tokenizer.format());
 			
 			app.connect();
 
