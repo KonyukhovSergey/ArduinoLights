@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import ru.serjik.parser.ByteCodeGenerator;
-import ru.serjik.parser.SourceColorFormatter;
 import ru.serjik.parser.Tokenizer;
 import android.os.Bundle;
 import android.os.Looper;

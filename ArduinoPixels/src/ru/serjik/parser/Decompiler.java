@@ -4,34 +4,62 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import ru.serjik.parser.ByteCodeGenerator.CommandTypes;
+
 public class Decompiler
 {
-	private static final String[] functions = { "", "add", "sub", "mul", "div", "neg", "sin", "cos", "exp", "loop",
-			"sqrt", "delay", "time", "rnd", "pow", "abs", "call", "ret", "jump", "jumpz", "end", "greater", "lower","eq","neq","set" };
-
 	public static String decode(byte[] bc) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.setLength(0);
 		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bc));
 
+		CommandTypes commands[] = CommandTypes.values();
+
 		int pos = -1;
 
 		while (dis.available() > 0)
 		{
-			int b = (int) dis.readByte();
+			int b = (int) dis.readByte() & 0xff;
 			pos++;
 
-			if (b == (byte) 0xc0)
+			if (b == CommandTypes.PUSH_FLOAT.ordinal())
 			{
-				sb.append("" + pos + " " + "push ");
+				sb.append("" + pos + " " + "push float ");
+				sb.append(dis.readFloat() + " ");
+				pos += 4;
+				sb.append('\n');
+				continue;
+			}
+
+			if (b == CommandTypes.PUSH_BYTE.ordinal())
+			{
+				sb.append("" + pos + " " + "push byte ");
+				sb.append((int) (0xff & dis.readByte()) + " ");
+				pos += 1;
+				sb.append('\n');
+				continue;
+			}
+
+			if (b == CommandTypes.PUSH_SHORT.ordinal())
+			{
+				sb.append("" + pos + " " + "push short ");
+				sb.append(dis.readShort() + " ");
+				pos += 2;
+				sb.append('\n');
+				continue;
+			}
+
+			if (b == CommandTypes.PUSH_INT.ordinal())
+			{
+				sb.append("" + pos + " " + "push int ");
 				sb.append(dis.readInt() + " ");
 				pos += 4;
 				sb.append('\n');
 				continue;
 			}
 
-			if ((b & (byte) 0x40) > 0)
+			if ((b >> 6) == 2)
 			{
 				sb.append("" + pos + " " + "push v[");
 				sb.append("" + (int) ((b & 0x3f)));
@@ -39,7 +67,7 @@ public class Decompiler
 				continue;
 			}
 
-			if ((b & 0x80) > 0)
+			if ((b >> 6) == 3)
 			{
 				sb.append("" + pos + " " + "pop v[");
 				sb.append("" + (int) ((b & 0x3f)));
@@ -47,13 +75,39 @@ public class Decompiler
 				continue;
 			}
 
-			if (b > 0 && b < 64)
+			if ((b >> 4) == 0x4)
 			{
-				sb.append("" + pos + " " + functions[b] + " (code = " + b + ")");
-				sb.append('\n');
+				int value = ((int) (b & 0x0f) << 8) | (dis.readByte() & 0xff);
+				sb.append("" + pos + " call " + value);
+				sb.append("\n");
+				pos++;
 				continue;
 			}
-			
+
+			if ((b >> 4) == 0x5)
+			{
+				int value = ((int) (b & 0x0f) << 8) | (dis.readByte() & 0xff);
+				sb.append("" + pos + " goto " + value);
+				sb.append("\n");
+				pos++;
+				continue;
+			}
+
+			if ((b >> 4) == 0x6)
+			{
+				int value = ((int) (b & 0xf) << 8) | (dis.readByte() & 0xff);
+				sb.append("" + pos + " jumpz " + value);
+				sb.append("\n");
+				pos++;
+				continue;
+			}
+
+			if (b > 0 && b < 64)
+			{
+				sb.append("" + pos + " " + commands[b] + "\n");
+				continue;
+			}
+
 			throw new Exception("incorrect code " + b);
 		}
 
