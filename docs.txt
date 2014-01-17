@@ -1,44 +1,37 @@
 byte code:
 
- bit
- 76
+10xxxxxx == 0x80 push variable
+11xxxxxx == 0xc0 pop var
+00xxxxxx any one byte command
+0100xxxx == 0x40 xxxxxxxx call
+0101xxxx == 0x50 xxxxxxxx goto
+0110xxxx == 0x60 xxxxxxxx jump if zero
+0111xxxx free for use... may be used for push decimal
 
- 11000000 0xc0 - push const: push next 4 bytes to stack as float value
- 01xvvvvv 0x40 - push vvvvv - variable index
- 10xvvvvv 0x80 - pop  vvvvv - variable index 
+	public enum CommandTypes
+	{
+		ERROR,
 
- 0001vvvv vvvv vvvv - call v... - adress
- 0010vvvv vvvv vvvv - goto
- 0011vvvv vvvv vvvv - jump if zero
+		ADD, SUB, MUL, DIV, NEG,
 
+		SIN, COS, EXP, SQRT, POW, ABS,
 
+		LOOP, DELAY, TIME, RND, RET, END,
 
- 00cccccc - command
- 01 add
- 02 sub
- 03 mul
- 04 div
- 05 neg
- 06 sin
- 07 cos
- 08 exp
- 09 loop
- 10 sqrt
- 11 delay
- 12 time
- 13 rnd
- 14 pow
+		GREATER, LOWER, EQ, NEQ,
+
+		SET_RGB, SET_COLOR,
+
+		PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
+	}
+
 
 transfer protocol
 
-expected:
+expected on reciever size:
 
 1. recv one byte (block lenght)
 2. recv lenght bytes (data)
 3. send one byte(xor data byte)
 
 last block lenght == 0;
-
-
-byte len
-

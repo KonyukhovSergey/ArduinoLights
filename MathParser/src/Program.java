@@ -22,7 +22,7 @@ public class Program
 			                   "pos = 0;color = 0;" +
 			                   "r = 255; g = 0; b = 0;" +
 			                   "loop;" +
-			                   "set(pos,r,g,b);delay(1);" +
+			                   "set(pos,r,g,b);" +
 			                   "pos=pos+1;" +
 			                   "if pos > 49 then pos = 0;" +
 			                   "color=color+1;if color>6 then color = 0;endif;"+

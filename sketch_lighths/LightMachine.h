@@ -11,33 +11,22 @@
 
 #include "Screen.h"
 
-#define COMMAND_ADD     0x01
-#define COMMAND_SUB     0x02
-#define COMMAND_MUL     0x03
-#define COMMAND_DIV     0x04
-#define COMMAND_NEG     0x05
-#define COMMAND_SIN     0x06
-#define COMMAND_COS     0x07
-#define COMMAND_EXP     0x08
-#define COMMAND_LOOP    0x09
-#define COMMAND_SQRT    0x0a
-#define COMMAND_DELAY   0x0b
-#define COMMAND_TIME    0x0c
-#define COMMAND_RND     0x0d
-#define COMMAND_POW     0x0e
-#define COMMAND_ABS     0x0f
-#define COMMAND_CALL    0x10
-#define COMMAND_RET     0x11
-#define COMMAND_JUMP    0x12
-#define COMMAND_JUMPZ   0x13
-#define COMMAND_END     0x14
+enum CommandTypes
+{
+  ERROR_,
 
-#define COMMAND_GREATER 0x15
-#define COMMAND_LOWER   0x16
-#define COMMAND_EQ      0x17
-#define COMMAND_NEQ     0x18
+  ADD, SUB, MUL, DIV, NEG,
 
-#define COMMAND_SET     0x19
+  SIN, COS, EXP, SQRT, POW, ABS,
+
+  LOOP, DELAY, TIME, RND, RET, END,
+
+  GREATER, LOWER, EQ, NEQ,
+
+  SET_RGB, SET_COLOR,
+
+  PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
+};
 
 struct LightMachine
 {
@@ -69,7 +58,7 @@ struct LightMachine
     {
       variables[i] = 0;
     }
-    
+
     for(int i = 0; i < 1024; i ++)
     {
       prog[i] = EEPROM.read(i);
@@ -78,7 +67,7 @@ struct LightMachine
     interuptCounter = 0;
 
     startPosition = execute();
-  }
+  }	
 
   float pop()
   {
@@ -110,15 +99,29 @@ struct LightMachine
     return stackInts[stackPosition];
   }
 
-  float getConst()
+  float getByte()
   {
-    float value;
-    uint8_t *ptr = (uint8_t*)&value;
+    uint8_t value;
+    value = prog[pos];
+    pos += 1;
+    return value;
+  }
 
-//    *(ptr + 0) = EEPROM.read(pos + 3);
-//    *(ptr + 1) = EEPROM.read(pos + 2);
-//    *(ptr + 2) = EEPROM.read(pos + 1);
-//    *(ptr + 3) = EEPROM.read(pos + 0);
+  float getShort()
+  {
+    uint16_t value;
+    uint8_t *ptr = (uint8_t*) & value;
+
+    *(ptr + 0) = prog[pos + 1];
+    *(ptr + 1) = prog[pos + 0];
+
+    pos += 2;  
+  }
+
+  float getInt()
+  {
+    uint32_t value;
+    uint8_t *ptr = (uint8_t*)&value;
 
     *(ptr + 0) = prog[pos + 3];
     *(ptr + 1) = prog[pos + 2];
@@ -129,6 +132,22 @@ struct LightMachine
 
     return value;
   }
+
+  float getFloat()
+  {
+    float value;
+    uint8_t *ptr = (uint8_t*)&value;
+
+    *(ptr + 0) = prog[pos + 3];
+    *(ptr + 1) = prog[pos + 2];
+    *(ptr + 2) = prog[pos + 1];
+    *(ptr + 3) = prog[pos + 0];
+
+    pos += 4;
+
+    return value;
+  }
+
 
   uint16_t execute()
   {
@@ -158,205 +177,223 @@ struct LightMachine
 
       pos++;
 
-
-      if(b == 0xc0)
+      if(b < 64)
       {
-        push(getConst());
-        continue;
-      }
-
-      if(b & 0x40)
-      {
-        push(variables[b & 0x3f]);
-        continue;
-      }
-
-      if(b & 0x80)
-      {
-        variables[b & 0x3f] = pop();
-        continue;
-      }
-
-      switch(b)
-      {
-      case COMMAND_GREATER:
+        switch(b)
         {
-//        	stackInts[stackPosition-2] = stackInts[stackPosition-2] > stackInts[stackPosition-1]? 1 : 0;
-//        	stackPosition--;
-          float rv = pop();
-          float lv = pop();
-          pushInt(lv > rv? 1 : 0);
-        }
-        break;
+        case PUSH_BYTE:
+          push(getByte());
+          break;
+        case PUSH_SHORT:
+          push(getShort());
+          break;
+        case PUSH_INT:
+          push(getInt());
+          break;
+        case PUSH_FLOAT:
+          push(getFloat());
+          break;
 
-      case COMMAND_LOWER:
-        {
-//        	stackInts[stackPosition-2] = stackInts[stackPosition-2] < stackInts[stackPosition-1]? 1 : 0;
-//        	stackPosition--;
-          float rv = pop();
-          float lv = pop();
-          pushInt(lv < rv? 1 : 0);
-        }
-        break;
+        case GREATER:
+          {
+            //        	stackInts[stackPosition-2] = stackInts[stackPosition-2] > stackInts[stackPosition-1] ? 1 : 0;
+            //        	stackPosition--;
+            float rv = pop();
+            float lv = pop();
+            pushInt(lv > rv? 1 : 0);
+          }
+          break;
 
-      case COMMAND_EQ:
-        {
-          float rv = pop();
-          float lv = pop();
-          pushInt( fabs(lv - rv) < 0.00001 ? 1 : 0);
-        }
-        break;
+        case LOWER:
+          {
+            //        	stackInts[stackPosition-2] = stackInts[stackPosition-2] < stackInts[stackPosition-1] ? 1 : 0;
+            //        	stackPosition--;
+            float rv = pop();
+            float lv = pop();
+            pushInt(lv < rv? 1 : 0);
+          }
+          break;
 
-      case COMMAND_NEQ:
-        {
-          float rv = pop();
-          float lv = pop();
-          pushInt( fabs(lv - rv) > 0.00001 ? 1 : 0);
-        }
-        break;
+        case EQ:
+          {
+            float rv = pop();
+            float lv = pop();
+            pushInt( fabs(lv - rv) < 0.00001 ? 1 : 0);
+          }
+          break;
 
-      case COMMAND_ADD:
-        {
-//        	stackValues[stackPosition-2] = stackValues[stackPosition-2] + stackValues[stackPosition-1];
-//        	stackPosition--;
-          float rv = pop();
-          float lv = pop();
-          push(lv + rv);
-        }
-        break;
+        case NEQ:
+          {
+            float rv = pop();
+            float lv = pop();
+            pushInt( fabs(lv - rv) > 0.00001 ? 1 : 0);
+          }
+          break;
 
-      case COMMAND_SUB:
-        {
-          float rv = pop();
-          float lv = pop();
-          push(lv - rv);
-        }
-        break;
+        case ADD:
+          {
+            //        	stackValues[stackPosition-2] = stackValues[stackPosition-2] + stackValues[stackPosition-1];
+            //        	stackPosition--;
+            float rv = pop();
+            float lv = pop();
+            push(lv + rv);
+          }
+          break;
 
-      case COMMAND_MUL:
-        {
-          float rv = pop();
-          float lv = pop();
-          push(lv * rv);
-        }
-        break;
+        case SUB:
+          {
+            float rv = pop();
+            float lv = pop();
+            push(lv - rv);
+          }
+          break;
 
-      case COMMAND_DIV:
-        {
-          float rv = pop();
-          float lv = pop();
-          push(lv / rv);
-        }
-        break;
+        case MUL:
+          {
+            float rv = pop();
+            float lv = pop();
+            push(lv * rv);
+          }
+          break;
 
-      case COMMAND_NEG:
-        {
-          push(-pop());
-        }
-        break;
+        case DIV:
+          {
+            float rv = pop();
+            float lv = pop();
+            push(lv / rv);
+          }
+          break;
 
-      case COMMAND_SIN:
-        {
-          push(sin(pop()));
-        }
-        break;
+        case NEG:
+          {
+            push(-pop());
+          }
+          break;
 
-      case COMMAND_COS:
-        {
-          push(cos(pop()));
-        }
-        break;
+        case SIN:
+          {
+            push(sin(pop()));
+          }
+          break;
 
-      case COMMAND_EXP:
-        {
-          push(exp(pop()));
-        }
-        break;
+        case COS:
+          {
+            push(cos(pop()));
+          }
+          break;
 
-      case COMMAND_LOOP:
-        {
+        case EXP:
+          {
+            push(exp(pop()));
+          }
+          break;
+
+        case LOOP:
+          {
+            return pos;
+          }
+
+        case SQRT:
+          {
+            push(sqrt(pop()));
+          }
+          break;
+
+        case DELAY:
+          {
+            delay(pop());
+          }
+          break;
+
+        case TIME:
+          {
+            push(millis());
+          }
+          break;
+
+        case POW:
+          {
+            float rv = pop();
+            float lv = pop();
+            push(pow(lv, rv));
+          }
+          break;
+        case ABS:
+          {
+            float value = pop();
+            push(value < 0 ? -value : value);
+          }
+          break;
+
+        case RET:
+          {
+            pos = popInt();
+          }
+          break;
+
+
+        case SET_RGB:
+          {
+            uint8_t b = pop();
+            uint8_t g = pop();
+            uint8_t r = pop();
+            uint8_t i = pop();
+
+            screen->set(i, r, g, b);
+          }
+          break;
+
+        case RND:
+          push((float)random(999999)/999999.0f);
+          break;
+
+        case END:
           return pos;
-        }
 
-      case COMMAND_SQRT:
-        {
-          push(sqrt(pop()));
+        default:
+          //TODO: error
+          return pos;
+          break;
         }
-        break;
+        continue;
+      }
 
-      case COMMAND_DELAY:
+      if(b & 0x80) // push or pop
+      {
+        if(b & 0x40) // pop
         {
-          delay(pop());
+          variables[b & 0x3f] = pop();
+          continue;
         }
-        break;
+        else // push
+        {
+          push(variables[b & 0x3f]);
+          continue;
+        }
+      }
+      else // any jump command
+      {
+        uint16_t address = ((b & 0xf) << 8) | prog[pos];
+        pos++;
 
-      case COMMAND_TIME:
+        switch(b >> 4)
         {
-          push(millis());
-        }
-        break;
-
-      case COMMAND_POW:
-        {
-          float rv = pop();
-          float lv = pop();
-          push(pow(lv, rv));
-        }
-        break;
-      case COMMAND_ABS:
-        {
-          float value = pop();
-          push(value < 0 ? -value : value);
-        }
-        break;
-      case COMMAND_CALL:
-        {
-          uint32_t address = popInt();
+        case 4: // call
           pushInt(pos);
           pos = address;
-        }
-        break;
+          break;
 
-      case COMMAND_RET:
-        {
-          pos = popInt();
-        }
-        break;
+        case 5: // goto
+          pos = address;
+          break;
 
-      case COMMAND_JUMP:
-        {
-          pos = popInt();
-        }
-        break;
-
-      case COMMAND_JUMPZ:
-        {
-          uint32_t address = popInt();
-
+        case 6: // jumpz
           if(popInt() == 0)
           {
             pos = address;
           }
+          break;
         }
-        break;
-
-      case COMMAND_SET:
-        {
-          uint8_t b = pop();
-          uint8_t g = pop();
-          uint8_t r = pop();
-          uint8_t i = pop();
-
-          screen->set(i, r, g, b);
-        }
-        break;
-        
-      case COMMAND_RND:
-        push((float)random(999999)/999999.0f);
-      	break;
-
-      case COMMAND_END:
-        return pos;
       }
     }
 
@@ -365,6 +402,8 @@ struct LightMachine
 };
 
 #endif
+
+
 
 
 
