@@ -87,7 +87,7 @@ public class ActivityProgram extends Activity
 	protected void onPause()
 	{
 		app.cfg.remove(getIntent().getStringExtra(PROGRAM_NAME));
-		
+
 		if (isDeleteSelected == false)
 		{
 			app.cfg.set(getProgramName(), getProg());
@@ -114,6 +114,7 @@ public class ActivityProgram extends Activity
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
@@ -124,30 +125,20 @@ public class ActivityProgram extends Activity
 		{
 			Tokenizer tokenizer = new Tokenizer();
 			tokenizer.tokenize(getProg());
-			//editProg.setText(tokenizer.format());
-			
+
 			app.connect();
 
-			app.cfg.set(getIntent().getStringExtra(PROGRAM_NAME), tokenizer.format());
-
 			ByteCodeGenerator eval = new ByteCodeGenerator(tokenizer);
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-
 			byte[] byteCode = eval.getByteCode();
-
-			if (byteCode.length < 1022)
-			{
-				Toast.makeText(this, "sending " + byteCode.length + " bytes as byte code...", Toast.LENGTH_LONG).show();
-				baos.write(0x04);
-				baos.write(byteCode);
-				
-				app.send(baos.toByteArray());
-			}
-			else
+			if (byteCode.length > 1023)
 			{
 				Toast.makeText(this, "error! the prog is to long. \n" + byteCode.length + " bytes as byte code",
 						Toast.LENGTH_LONG).show();
+			}
+			else
+			{
+				Toast.makeText(this, "sending " + byteCode.length + " bytes as byte code...", Toast.LENGTH_LONG).show();
+				app.send(byteCode);
 			}
 		}
 		catch (Exception e)

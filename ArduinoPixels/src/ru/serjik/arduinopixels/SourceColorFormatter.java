@@ -1,10 +1,10 @@
 package ru.serjik.arduinopixels;
 
+
 import ru.serjik.parser.Tokenizer;
 import ru.serjik.parser.Tokenizer.Token;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 
 public class SourceColorFormatter

@@ -1,6 +1,9 @@
 #ifndef LIGHT_MACHINE_H
 #define LIGHT_MACHINE_H
 
+
+#define EEPROM_SIZE 1024
+
 #define STACK_SIZE	48
 #define MAX_VARIABLES_COUNT 64
 
@@ -33,7 +36,8 @@ struct LightMachine
   uint16_t pos;
 
   float stackValues[STACK_SIZE];
-  uint8_t prog[1024];
+  float variables[MAX_VARIABLES_COUNT];
+  uint8_t *progCopy;
 
   uint32_t *stackInts;
   uint8_t stackPosition;
@@ -42,11 +46,11 @@ struct LightMachine
 
   Screen *screen;
 
-  float variables[MAX_VARIABLES_COUNT];
-
-  void init(Screen *screen)
+  void init(Screen *screen, uint8_t *progCopy)
   {
     this->screen = screen;
+    this->progCopy = progCopy;
+
     screen->clear(0, 0, 0);
 
     startPosition = 0;
@@ -59,15 +63,21 @@ struct LightMachine
       variables[i] = 0;
     }
 
-    for(int i = 0; i < 1024; i ++)
+    for(int i = 0; i < EEPROM_SIZE; i ++)
     {
-      prog[i] = EEPROM.read(i);
+      progCopy[i] = EEPROM.read(i);
     }
 
     interuptCounter = 0;
 
     startPosition = execute();
   }	
+
+  uint8_t prog(uint16_t pos)
+  {
+    return progCopy[pos];
+    //return EEPROM.read(pos);
+  }
 
   float pop()
   {
@@ -87,13 +97,13 @@ struct LightMachine
     }
   }
 
-  void pushInt(uint8_t value)
+  void pushInt(uint32_t value)
   {
     stackInts[stackPosition] = value;
     stackPosition++;
   }
 
-  uint8_t popInt()
+  uint32_t popInt()
   {
     stackPosition--;
     return stackInts[stackPosition];
@@ -102,7 +112,7 @@ struct LightMachine
   float getByte()
   {
     uint8_t value;
-    value = prog[pos];
+    value = prog(pos);
     pos += 1;
     return value;
   }
@@ -112,10 +122,12 @@ struct LightMachine
     uint16_t value;
     uint8_t *ptr = (uint8_t*) & value;
 
-    *(ptr + 0) = prog[pos + 1];
-    *(ptr + 1) = prog[pos + 0];
+    *(ptr + 0) = prog(pos + 1);
+    *(ptr + 1) = prog(pos + 0);
 
     pos += 2;  
+    
+    return value;
   }
 
   float getInt()
@@ -123,10 +135,10 @@ struct LightMachine
     uint32_t value;
     uint8_t *ptr = (uint8_t*)&value;
 
-    *(ptr + 0) = prog[pos + 3];
-    *(ptr + 1) = prog[pos + 2];
-    *(ptr + 2) = prog[pos + 1];
-    *(ptr + 3) = prog[pos + 0];
+    *(ptr + 0) = prog(pos + 3);
+    *(ptr + 1) = prog(pos + 2);
+    *(ptr + 2) = prog(pos + 1);
+    *(ptr + 3) = prog(pos + 0);
 
     pos += 4;
 
@@ -138,16 +150,15 @@ struct LightMachine
     float value;
     uint8_t *ptr = (uint8_t*)&value;
 
-    *(ptr + 0) = prog[pos + 3];
-    *(ptr + 1) = prog[pos + 2];
-    *(ptr + 2) = prog[pos + 1];
-    *(ptr + 3) = prog[pos + 0];
+    *(ptr + 0) = prog(pos + 3);
+    *(ptr + 1) = prog(pos + 2);
+    *(ptr + 2) = prog(pos + 1);
+    *(ptr + 3) = prog(pos + 0);
 
     pos += 4;
 
     return value;
   }
-
 
   uint16_t execute()
   {
@@ -167,8 +178,7 @@ struct LightMachine
         }
       }
 
-      //uint8_t b = EEPROM.read(pos);
-      uint8_t b = prog[pos];
+      uint8_t b = prog(pos);
 
       if(b == 0x00)
       {
@@ -184,33 +194,36 @@ struct LightMachine
         case PUSH_BYTE:
           push(getByte());
           break;
+
         case PUSH_SHORT:
           push(getShort());
           break;
+
         case PUSH_INT:
           push(getInt());
           break;
+
         case PUSH_FLOAT:
           push(getFloat());
           break;
 
         case GREATER:
           {
-            //        	stackInts[stackPosition-2] = stackInts[stackPosition-2] > stackInts[stackPosition-1] ? 1 : 0;
-            //        	stackPosition--;
+            //stackInts[stackPosition-2] = stackInts[stackPosition-2] > stackInts[stackPosition-1] ? 1 : 0;
+            //stackPosition--;
             float rv = pop();
             float lv = pop();
-            pushInt(lv > rv? 1 : 0);
+            pushInt(lv > rv ? 1 : 0);
           }
           break;
 
         case LOWER:
           {
-            //        	stackInts[stackPosition-2] = stackInts[stackPosition-2] < stackInts[stackPosition-1] ? 1 : 0;
-            //        	stackPosition--;
+            //stackInts[stackPosition-2] = stackInts[stackPosition-2] < stackInts[stackPosition-1] ? 1 : 0;
+            //stackPosition--;
             float rv = pop();
             float lv = pop();
-            pushInt(lv < rv? 1 : 0);
+            pushInt(lv < rv ? 1 : 0);
           }
           break;
 
@@ -218,7 +231,7 @@ struct LightMachine
           {
             float rv = pop();
             float lv = pop();
-            pushInt( fabs(lv - rv) < 0.00001 ? 1 : 0);
+            pushInt(fabs(lv - rv) < 0.00001 ? 1 : 0);
           }
           break;
 
@@ -226,14 +239,14 @@ struct LightMachine
           {
             float rv = pop();
             float lv = pop();
-            pushInt( fabs(lv - rv) > 0.00001 ? 1 : 0);
+            pushInt(fabs(lv - rv) > 0.00001 ? 1 : 0);
           }
           break;
 
         case ADD:
           {
-            //        	stackValues[stackPosition-2] = stackValues[stackPosition-2] + stackValues[stackPosition-1];
-            //        	stackPosition--;
+            //stackValues[stackPosition-2] = stackValues[stackPosition-2] + stackValues[stackPosition-1];
+            //stackPosition--;
             float rv = pop();
             float lv = pop();
             push(lv + rv);
@@ -344,7 +357,7 @@ struct LightMachine
           break;
 
         case RND:
-          push((float)random(999999)/999999.0f);
+          push((float)random(32767)/32767.0f);
           break;
 
         case END:
@@ -373,7 +386,8 @@ struct LightMachine
       }
       else // any jump command
       {
-        uint16_t address = ((b & 0xf) << 8) | prog[pos];
+        uint16_t address = ((b & 0x0f) << 8) | prog(pos);
+
         pos++;
 
         switch(b >> 4)
@@ -402,6 +416,13 @@ struct LightMachine
 };
 
 #endif
+
+
+
+
+
+
+
 
 
 

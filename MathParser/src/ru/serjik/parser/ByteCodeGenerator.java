@@ -350,7 +350,7 @@ public class ByteCodeGenerator
 			if (token.token == TokenType.CONST_INTEGER)
 			{
 				writePushInt(token.sequence);
-				System.out.println("push int " + token.sequence);
+				System.out.println("push integer type " + token.sequence);
 			}
 
 			if (token.token == TokenType.IDENTIFIER)
@@ -489,12 +489,6 @@ public class ByteCodeGenerator
 			variables.put(sequence, variables.size());
 		}
 		baos.write(0xc0 | variables.get(sequence));
-	}
-
-	private void writeTwoBytes()
-	{
-		baos.write(0);
-		baos.write(0);
 	}
 
 	private void writePushFloat(String sequence) throws Exception

@@ -113,8 +113,6 @@ public class app extends Application implements OnBluetoothDeviceListener
 
 				Log.v("ArduinoPixels", "sended block data");
 
-				// int t= inStream.read();
-
 				if (xorValueForBlock != (int) (inStream.read() & 0xff))
 				{
 					throw new IOException("incorrect xor value");

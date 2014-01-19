@@ -15,8 +15,8 @@ public class Tokenizer
 	{
 		public final TokenType token;
 		public final String sequence;
-		public final int beginPosition;
-		public final int endPosition;
+		public int beginPosition;
+		public int endPosition;
 
 		public Token(TokenType token, String sequence, int begin, int end)
 		{
@@ -29,6 +29,12 @@ public class Tokenizer
 
 			System.out.println(sequence + " " + token);
 		}
+
+		public int length()
+		{
+			return endPosition - beginPosition;
+		}
+
 	}
 
 	public Tokenizer()
@@ -168,7 +174,8 @@ public class Tokenizer
 				case ASSIGN:
 				case RELATION:
 					sb.append(" ");
-					sb.append(token.sequence);
+
+					addTokenToStringBuilder(sb, token);
 
 					if (token.sequence.equals("-"))
 					{
@@ -191,18 +198,18 @@ public class Tokenizer
 
 				case COMMENT:
 				case SEMICOLON:
-					sb.append(token.sequence);
+					addTokenToStringBuilder(sb, token);
 					sb.append("\n" + ident);
 					break;
 
 				case COMMA:
-					sb.append(token.sequence);
+					addTokenToStringBuilder(sb, token);
 					sb.append(' ');
 					break;
 
 				case LABEL:
 					sb.append("\n" + ident);
-					sb.append(token.sequence);
+					addTokenToStringBuilder(sb, token);
 					sb.append(":");
 					break;
 
@@ -211,35 +218,47 @@ public class Tokenizer
 					if (token.sequence.equals("if"))
 					{
 						ident = ident + "  ";
-						sb.append(token.sequence + " ");
+						addTokenToStringBuilder(sb, token);
+						sb.append(" ");
 					}
 					else if (token.sequence.equals("then"))
 					{
-						sb.append(" " + token.sequence + "\n" + ident);
+						sb.append(" ");
+						addTokenToStringBuilder(sb, token);
+						sb.append("\n" + ident);
 					}
 					else if (token.sequence.equals("endif"))
 					{
 						ident = ident.substring(0, ident.length() - 2);
 						sb.setLength(sb.length() - 2);
-						sb.append(token.sequence);
+						addTokenToStringBuilder(sb, token);
 					}
-					else if (token.sequence.equals("loop") || token.sequence.equals("ret") || token.sequence.equals("end"))
+					else if (token.sequence.equals("loop") || token.sequence.equals("ret")
+							|| token.sequence.equals("end"))
 					{
-						sb.append(token.sequence);
+						addTokenToStringBuilder(sb, token);
 					}
 					else
 					{
-						sb.append(token.sequence + " ");
+						addTokenToStringBuilder(sb, token);
+						sb.append(" ");
 					}
 				}
 					break;
 
 				default:
-					sb.append(token.sequence);
+					addTokenToStringBuilder(sb, token);
 					break;
 			}
 		}
 		return sb.toString();
+	}
+
+	private static void addTokenToStringBuilder(StringBuilder sb, Token token)
+	{
+		token.beginPosition = sb.length();
+		sb.append(token.sequence);
+		token.endPosition = sb.length();
 	}
 
 	public LinkedList<Token> getTokens()

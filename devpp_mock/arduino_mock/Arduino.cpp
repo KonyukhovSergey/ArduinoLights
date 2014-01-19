@@ -16,7 +16,7 @@ void randomSeed(int value)
 
 int random(int maxValue)
 {
-	return 0;
+	return rand()%maxValue;
 }
 
 int millis()

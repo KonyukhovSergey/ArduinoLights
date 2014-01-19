@@ -8,7 +8,13 @@
 
 struct Screen
 {
-  uint8_t pixels[SCREEN_PIXELS * 3];
+  uint8_t *pixels;
+
+  void init(uint8_t *pixels)
+  {
+    this->pixels = pixels;
+    clear(0, 0, 0);
+  }
 
   void clear(uint8_t r, uint8_t g, uint8_t b)
   {
@@ -45,16 +51,17 @@ struct Screen
 
   void send()
   {
-    for(int i = 0; i < SCREEN_PIXELS * 3; i += 3) 
+    for(int i = 0; i < SCREEN_PIXELS * 3; i ++) 
     {
-      SPI.transfer(pixels[i + 0]);
-      SPI.transfer(pixels[i + 1]);
-      SPI.transfer(pixels[i + 2]);
+      SPI.transfer(pixels[i]);
     }
     delay(1);
   }
 };
 
 #endif
+
+
+
 
 
