@@ -1,15 +1,13 @@
 package ru.serjik.arduinopixels;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import ru.serjik.parser.ByteCodeGenerator;
 import ru.serjik.parser.Tokenizer;
-import android.os.Bundle;
-import android.os.Looper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

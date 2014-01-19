@@ -36,12 +36,7 @@ public class Program
 //			                   "endif;" +
 //			                   "end");
 			 
-			tokenizer.tokenize("// random cicle \n" +
-					"r = 0;g = 0;b = 0;c = 10;x=0;loop;delay(1000);" +
-					"c = c + 1;" +
-					"if c > 9 then  c = 0;  r = rnd() * 255;  g = rnd() * 255;  b = rnd() * 255;endif;" +
-					"set(x, r, g, b);x = x + 1;" +
-					"if x > 49 then x=0;endif;end");
+			tokenizer.tokenize("loop;x=0;while x<50 do x=x+1;set(x,255,255,255);repeat;end;");
 	 
 			 
 

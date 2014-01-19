@@ -1,18 +1,17 @@
 package ru.serjik.arduinopixels;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class ActivityPixels extends Activity
 {

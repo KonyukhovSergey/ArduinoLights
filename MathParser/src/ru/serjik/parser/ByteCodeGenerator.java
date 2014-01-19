@@ -28,6 +28,10 @@ public class ByteCodeGenerator
 		SET_RGB, SET_COLOR,
 
 		PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
+
+		COMMAND_FOR, COMMAND_TO, COMMAND_STEP, COMMAND_NEXT,
+
+		SHLEFT, SHRIGHT,
 	}
 
 	private LinkedList<Token> tokens;
@@ -210,7 +214,7 @@ public class ByteCodeGenerator
 
 			endIfPositions.add(new EndIfPosition(pos, baos.size()));
 		}
-		else if (token.sequence.equals("endif"))
+		else if (token.sequence.equals("endif") || token.sequence.equals("repeat"))
 		{
 			return false;
 		}
@@ -228,7 +232,37 @@ public class ByteCodeGenerator
 			baos.write(0x00);
 			System.out.println("goto " + token.sequence);
 		}
+		else if (token.sequence.equals("while"))
+		{
+			int posWhile = baos.size();
+			
+			expression();
+			
+			Token tokenDo = tokens.pollFirst();
+			
+			if (tokenDo.sequence.equals("do") == false)
+			{
+				throw new Exception("'do' expected");
+			}
+			
+			int pos = baos.size();
+
+			baos.write(0x60); // jumpz
+			baos.write(0x00);
+			
+			prog();
+
+			writeGotoAddress(posWhile);
+			
+			endIfPositions.add(new EndIfPosition(pos, baos.size()));
+		}
 		return true;
+	}
+	
+	private void writeGotoAddress(int pos)
+	{
+		baos.write((byte) ((0x50) | ((pos & 0x0f00) >> 8)));
+		baos.write((byte) (pos & 0xff));
 	}
 
 	private void expression() throws Exception
@@ -350,7 +384,7 @@ public class ByteCodeGenerator
 			if (token.token == TokenType.CONST_INTEGER)
 			{
 				writePushInt(token.sequence);
-				System.out.println("push integer type " + token.sequence);
+				System.out.println("push int " + token.sequence);
 			}
 
 			if (token.token == TokenType.IDENTIFIER)
@@ -489,6 +523,12 @@ public class ByteCodeGenerator
 			variables.put(sequence, variables.size());
 		}
 		baos.write(0xc0 | variables.get(sequence));
+	}
+
+	private void writeTwoBytes()
+	{
+		baos.write(0);
+		baos.write(0);
 	}
 
 	private void writePushFloat(String sequence) throws Exception

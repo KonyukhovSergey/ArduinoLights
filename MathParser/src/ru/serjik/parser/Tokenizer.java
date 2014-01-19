@@ -86,10 +86,13 @@ public class Tokenizer
 		predefinedKeywords.put("endif", TokenType.KEYWORD);
 		predefinedKeywords.put("if", TokenType.KEYWORD);
 		predefinedKeywords.put("then", TokenType.KEYWORD);
-		predefinedKeywords.put("else", TokenType.KEYWORD);
 		predefinedKeywords.put("goto", TokenType.KEYWORD);
 		predefinedKeywords.put("loop", TokenType.KEYWORD);
-
+		predefinedKeywords.put("while", TokenType.KEYWORD);
+		predefinedKeywords.put("do", TokenType.KEYWORD);
+		predefinedKeywords.put("repeat", TokenType.KEYWORD);
+		predefinedKeywords.put("shleft", TokenType.KEYWORD);
+		predefinedKeywords.put("shright", TokenType.KEYWORD);
 	}
 
 	public void add(String regex, TokenType tokenType)
@@ -164,6 +167,7 @@ public class Tokenizer
 	{
 		StringBuilder sb = new StringBuilder();
 		String ident = "";
+		String identSize = "   ";
 
 		for (Token token : tokens)
 		{
@@ -215,22 +219,22 @@ public class Tokenizer
 
 				case KEYWORD:
 				{
-					if (token.sequence.equals("if"))
+					if (token.sequence.equals("if") || token.sequence.equals("while"))
 					{
-						ident = ident + "  ";
+						ident = ident + identSize;
 						addTokenToStringBuilder(sb, token);
 						sb.append(" ");
 					}
-					else if (token.sequence.equals("then"))
+					else if (token.sequence.equals("then") || token.sequence.equals("do"))
 					{
 						sb.append(" ");
 						addTokenToStringBuilder(sb, token);
 						sb.append("\n" + ident);
 					}
-					else if (token.sequence.equals("endif"))
+					else if (token.sequence.equals("endif") || token.sequence.equals("repeat"))
 					{
-						ident = ident.substring(0, ident.length() - 2);
-						sb.setLength(sb.length() - 2);
+						ident = ident.substring(0, ident.length() - identSize.length());
+						sb.setLength(sb.length() - identSize.length());
 						addTokenToStringBuilder(sb, token);
 					}
 					else if (token.sequence.equals("loop") || token.sequence.equals("ret")
