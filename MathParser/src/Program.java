@@ -36,7 +36,7 @@ public class Program
 //			                   "endif;" +
 //			                   "end");
 			 
-			tokenizer.tokenize("loop;x=0;while x<50 do x=x+1;set(x,255,255,255);repeat;end;");
+			tokenizer.tokenize("set(5,255,255,255);loop;shright;delay(333);end");
 	 
 			 
 

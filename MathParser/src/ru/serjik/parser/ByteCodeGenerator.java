@@ -29,8 +29,6 @@ public class ByteCodeGenerator
 
 		PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
 
-		COMMAND_FOR, COMMAND_TO, COMMAND_STEP, COMMAND_NEXT,
-
 		SHLEFT, SHRIGHT,
 	}
 
@@ -192,6 +190,16 @@ public class ByteCodeGenerator
 		else if (token.sequence.equals("ret"))
 		{
 			baos.write(CommandTypes.RET.ordinal());
+			System.out.println(token.sequence);
+		}
+		else if (token.sequence.equals("shleft"))
+		{
+			baos.write(CommandTypes.SHLEFT.ordinal());
+			System.out.println(token.sequence);
+		}
+		else if (token.sequence.equals("shright"))
+		{
+			baos.write(CommandTypes.SHRIGHT.ordinal());
 			System.out.println(token.sequence);
 		}
 		else if (token.sequence.equals("if"))

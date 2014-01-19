@@ -29,6 +29,8 @@ enum CommandTypes
   SET_RGB, SET_COLOR,
 
   PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
+
+  SHLEFT, SHRIGHT,
 };
 
 struct LightMachine
@@ -126,7 +128,7 @@ struct LightMachine
     *(ptr + 1) = prog(pos + 0);
 
     pos += 2;  
-    
+
     return value;
   }
 
@@ -344,6 +346,14 @@ struct LightMachine
           }
           break;
 
+        case SHLEFT:
+          screen->shleft();
+          break;
+
+        case SHRIGHT:
+          screen->shright();
+          break;
+
 
         case SET_RGB:
           {
@@ -416,6 +426,7 @@ struct LightMachine
 };
 
 #endif
+
 
 
 
