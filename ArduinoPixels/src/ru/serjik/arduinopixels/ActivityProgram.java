@@ -34,9 +34,17 @@ public class ActivityProgram extends Activity
 
 		String prog = app.cfg.get(getIntent().getStringExtra(PROGRAM_NAME));
 
-		if (false == prog.startsWith(getIntent().getStringExtra(PROGRAM_NAME)))
+		if (prog.isEmpty())
 		{
-			prog = getIntent().getStringExtra(PROGRAM_NAME) + "\n" + prog;
+			prog = getIntent().getStringExtra(PROGRAM_NAME) + "\n"
+					+ "// keywords: loop, call label, ret, goto label, if ... then ... endif; end;\n"
+					+ "// math: sin(x), cos(x), exp(x), sqrt(x), pow(x, y)\n" + "// label: 'identifier:'\n"
+					+ "// system: delay(milliseconds); rnd() returned [0..1]; set(i,r,g,b);\n"
+					+ "// loop: one draw cicle\n" + "pos = 0;color = 0;" + "r = 255; g = 0; b = 0;" + "loop;"
+					+ "set(pos,r,g,b);delay(1);" + "pos=pos+1;" + "if pos > 49 then pos = 0;"
+					+ "color=color+1;if color>3 then color = 0;endif;" + "if color==0 then r=0;b=0;b=255;endif;"
+					+ "if color==1 then r=0;g=255;b=0;endif;" + "if color==2 then r=255;g=0;b=0;endif;"
+					+ "if color==3 then r=255;g=255;b=255;endif;" + "endif;" + "end";
 		}
 
 		editProg.setText(prog);
@@ -86,9 +94,11 @@ public class ActivityProgram extends Activity
 	@Override
 	protected void onPause()
 	{
-		app.cfg.remove(getIntent().getStringExtra(PROGRAM_NAME));
-
-		if (isDeleteSelected == false)
+		if (isDeleteSelected)
+		{
+			app.cfg.remove(getIntent().getStringExtra(PROGRAM_NAME));
+		}
+		else
 		{
 			app.cfg.set(getProgramName(), getProg());
 		}
