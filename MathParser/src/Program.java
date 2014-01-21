@@ -36,9 +36,7 @@ public class Program
 //			                   "endif;" +
 //			                   "end");
 			 
-			tokenizer.tokenize("set(5,255,255,255);loop;shright;delay(333);end");
-	 
-			 
+			tokenizer.tokenize("t=0;loop;set(0,0,127*sin(t)+127,0);t=t+0.1;shright;end");
 
 			System.out.println("");
 

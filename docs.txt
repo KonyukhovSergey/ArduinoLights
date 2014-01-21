@@ -10,7 +10,7 @@ byte code:
 
 	public enum CommandTypes
 	{
-		ERROR,
+		ERROR_,
 
 		ADD, SUB, MUL, DIV, NEG,
 
@@ -20,9 +20,13 @@ byte code:
 
 		GREATER, LOWER, EQ, NEQ,
 
-		SET_RGB, SET_COLOR,
+		SET_RGB, SET_GAMMA,
 
 		PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
+
+		SHLEFT, SHRIGHT,
+
+		GET_R, GET_G, GET_B,
 	}
 
 

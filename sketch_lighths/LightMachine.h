@@ -1,7 +1,6 @@
 #ifndef LIGHT_MACHINE_H
 #define LIGHT_MACHINE_H
 
-
 #define EEPROM_SIZE 1024
 
 #define STACK_SIZE	48
@@ -26,25 +25,27 @@ enum CommandTypes
 
   GREATER, LOWER, EQ, NEQ,
 
-  SET_RGB, SET_COLOR,
+  SET_RGB, SET_GAMMA, 
 
   PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
 
   SHLEFT, SHRIGHT,
+
+  GET_R, GET_G, GET_B,
 };
 
 struct LightMachine
 {
   uint16_t pos;
 
-  float stackValues[STACK_SIZE];
+  float stackf[STACK_SIZE];
+  uint32_t *stacki;
   float variables[MAX_VARIABLES_COUNT];
   uint8_t *progCopy;
 
-  uint32_t *stackInts;
   uint8_t stackPosition;
   uint8_t interuptCounter;
-  uint16_t startPosition;
+  uint16_t loopPosition;
 
   Screen *screen;
 
@@ -55,10 +56,10 @@ struct LightMachine
 
     screen->clear(0, 0, 0);
 
-    startPosition = 0;
+    loopPosition = 0;
 
     stackPosition = 0;
-    stackInts = (uint32_t*)stackValues;
+    stacki = (uint32_t*)stackf;
 
     for(int i = 0; i < MAX_VARIABLES_COUNT; i++)
     {
@@ -72,7 +73,7 @@ struct LightMachine
 
     interuptCounter = 0;
 
-    startPosition = execute();
+    loopPosition = execute();
   }	
 
   uint8_t prog(uint16_t pos)
@@ -83,32 +84,26 @@ struct LightMachine
 
   float pop()
   {
-    if(stackPosition > 0)
-    {
-      stackPosition--;
-      return stackValues[stackPosition];
-    }
+    stackPosition--;
+    return stackf[stackPosition];
   }
 
   void push(float value)
   {
-    if(stackPosition < STACK_SIZE - 1)
-    {
-      stackValues[stackPosition] = value;
-      stackPosition++;
-    }
+    stackf[stackPosition] = value;
+    stackPosition++;
   }
 
   void pushInt(uint32_t value)
   {
-    stackInts[stackPosition] = value;
+    stacki[stackPosition] = value;
     stackPosition++;
   }
 
   uint32_t popInt()
   {
     stackPosition--;
-    return stackInts[stackPosition];
+    return stacki[stackPosition];
   }
 
   float getByte()
@@ -164,7 +159,12 @@ struct LightMachine
 
   uint16_t execute()
   {
-    pos = startPosition;
+    if(loopPosition >= EEPROM_SIZE)
+    {
+      return EEPROM_SIZE;
+    }
+
+    pos = loopPosition;
 
     while(true)
     {
@@ -176,7 +176,8 @@ struct LightMachine
 
         if(Serial.available() > 0)
         {
-          return 65535;
+          loopPosition = EEPROM_SIZE;
+          return EEPROM_SIZE;
         }
       }
 
@@ -189,9 +190,11 @@ struct LightMachine
 
       pos++;
 
-      if(b < 64)
+      switch(b >> 6)
       {
-        switch(b)
+      case 0: // command
+
+        switch(b & 0x3f)
         {
         case PUSH_BYTE:
           push(getByte());
@@ -354,7 +357,6 @@ struct LightMachine
           screen->shright();
           break;
 
-
         case SET_RGB:
           {
             uint8_t b = pop();
@@ -366,6 +368,22 @@ struct LightMachine
           }
           break;
 
+        case SET_GAMMA:
+          screen->setGamma(pop());
+          break;
+
+        case GET_R:
+          push(screen->r(pop()));
+          break;        	
+
+        case GET_G:
+          push(screen->g(pop()));
+          break;        	
+
+        case GET_B:
+          push(screen->b(pop()));
+          break;        	
+
         case RND:
           push((float)random(32767)/32767.0f);
           break;
@@ -374,58 +392,55 @@ struct LightMachine
           return pos;
 
         default:
-          //TODO: error
+          loopPosition = EEPROM_SIZE;
           return pos;
           break;
         }
-        continue;
-      }
+        break;
 
-      if(b & 0x80) // push or pop
-      {
-        if(b & 0x40) // pop
+      case 1: // some call form
         {
-          variables[b & 0x3f] = pop();
-          continue;
-        }
-        else // push
-        {
-          push(variables[b & 0x3f]);
-          continue;
-        }
-      }
-      else // any jump command
-      {
-        uint16_t address = ((b & 0x0f) << 8) | prog(pos);
+          uint16_t address = ((b & 0x0f) << 8) | prog(pos);
 
-        pos++;
+          pos++;
 
-        switch(b >> 4)
-        {
-        case 4: // call
-          pushInt(pos);
-          pos = address;
-          break;
-
-        case 5: // goto
-          pos = address;
-          break;
-
-        case 6: // jumpz
-          if(popInt() == 0)
+          switch(b >> 4)
           {
+          case 4: // call
+            pushInt(pos);
             pos = address;
+            break;
+
+          case 5: // goto
+            pos = address;
+            break;
+
+          case 6: // jumpz
+            if(popInt() == 0)
+            {
+              pos = address;
+            }
+            break;
           }
-          break;
         }
+        break;
+
+      case 2: // push variable
+        push(variables[b & 0x3f]);
+        break;
+
+      case 3: // pop veriable
+        variables[b & 0x3f] = pop();
+        break;
       }
     }
-
     return pos;
   }
 };
 
 #endif
+
+
 
 
 

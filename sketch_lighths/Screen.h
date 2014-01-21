@@ -6,6 +6,8 @@
 
 #define SCREEN_PIXELS 50
 
+extern uint8_t gamma[64];
+
 struct Screen
 {
   uint8_t *pixels;
@@ -14,6 +16,15 @@ struct Screen
   {
     this->pixels = pixels;
     clear(0, 0, 0);
+    setGamma(3.0f);
+  }
+
+  void setGamma(float gammaValue)
+  {
+    for(uint8_t i = 0; i < 64; i++)
+    {
+      gamma[i] = 255.0f * pow((float)i / 63.0f, gammaValue);
+    }
   }
 
   void clear(uint8_t r, uint8_t g, uint8_t b)
@@ -26,27 +37,39 @@ struct Screen
     }
   }
 
-  uint8_t r(uint8_t i)
+  uint8_t r(uint16_t i)
   {
-    return pixels[i * 3 + 0];
+    if(i < SCREEN_PIXELS)
+    {
+      return pixels[i * 3 + 0];
+    }
   }
 
-  uint8_t g(uint8_t i)
+  uint8_t g(uint16_t i)
   {
-    return pixels[i * 3 + 1];
+    if(i < SCREEN_PIXELS)
+    {
+      return pixels[i * 3 + 1];
+    }
   }
 
-  uint8_t b(uint8_t i)
+  uint8_t b(uint16_t i)
   {
-    return pixels[i * 3 + 2];
+    if(i < SCREEN_PIXELS)
+    {
+      return pixels[i * 3 + 2];
+    }
   }
 
-  void set(uint8_t i, uint8_t r, uint8_t g, uint8_t b)
+  void set(uint16_t i, uint8_t r, uint8_t g, uint8_t b)
   {
-    i *= 3;
-    pixels[i + 0] = r;
-    pixels[i + 1] = g;
-    pixels[i + 2] = b;
+    if(i < SCREEN_PIXELS)
+    {
+      i *= 3;
+      pixels[i + 0] = r;
+      pixels[i + 1] = g;
+      pixels[i + 2] = b;
+    }
   }
 
   void shleft()
@@ -97,13 +120,14 @@ struct Screen
   {
     for(int i = 0; i < SCREEN_PIXELS * 3; i ++) 
     {
-      SPI.transfer(pixels[i]);
+      SPI.transfer(gamma[pixels[i] >> 2]);
     }
     delay(1);
   }
 };
 
 #endif
+
 
 
 

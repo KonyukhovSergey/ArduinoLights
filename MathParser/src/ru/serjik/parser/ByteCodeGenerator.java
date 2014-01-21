@@ -15,7 +15,7 @@ public class ByteCodeGenerator
 {
 	public enum CommandTypes
 	{
-		ERROR,
+		ERROR_,
 
 		ADD, SUB, MUL, DIV, NEG,
 
@@ -25,11 +25,13 @@ public class ByteCodeGenerator
 
 		GREATER, LOWER, EQ, NEQ,
 
-		SET_RGB, SET_COLOR,
+		SET_RGB, SET_GAMMA,
 
 		PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
 
 		SHLEFT, SHRIGHT,
+
+		GET_R, GET_G, GET_B,
 	}
 
 	private LinkedList<Token> tokens;
@@ -243,30 +245,30 @@ public class ByteCodeGenerator
 		else if (token.sequence.equals("while"))
 		{
 			int posWhile = baos.size();
-			
+
 			expression();
-			
+
 			Token tokenDo = tokens.pollFirst();
-			
+
 			if (tokenDo.sequence.equals("do") == false)
 			{
 				throw new Exception("'do' expected");
 			}
-			
+
 			int pos = baos.size();
 
 			baos.write(0x60); // jumpz
 			baos.write(0x00);
-			
+
 			prog();
 
 			writeGotoAddress(posWhile);
-			
+
 			endIfPositions.add(new EndIfPosition(pos, baos.size()));
 		}
 		return true;
 	}
-	
+
 	private void writeGotoAddress(int pos)
 	{
 		baos.write((byte) ((0x50) | ((pos & 0x0f00) >> 8)));
@@ -443,6 +445,11 @@ public class ByteCodeGenerator
 			expression();
 			baos.write(CommandTypes.DELAY.ordinal());
 		}
+		else if (token.sequence.equals("gamma"))
+		{
+			expression();
+			baos.write(CommandTypes.SET_GAMMA.ordinal());
+		}
 		else if (token.sequence.equals("sin"))
 		{
 			expression();
@@ -452,6 +459,21 @@ public class ByteCodeGenerator
 		{
 			expression();
 			baos.write(CommandTypes.COS.ordinal());
+		}
+		else if (token.sequence.equals("getr"))
+		{
+			expression();
+			baos.write(CommandTypes.GET_R.ordinal());
+		}
+		else if (token.sequence.equals("getg"))
+		{
+			expression();
+			baos.write(CommandTypes.GET_G.ordinal());
+		}
+		else if (token.sequence.equals("getb"))
+		{
+			expression();
+			baos.write(CommandTypes.GET_B.ordinal());
 		}
 		else if (token.sequence.equals("exp"))
 		{

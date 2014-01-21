@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/DataReciever.o for_object/EEPROM.o
-LINKOBJ  = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/DataReciever.o for_object/EEPROM.o
+OBJ      = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/DataReciever.o for_object/EEPROM.o for_object/Screen.o
+LINKOBJ  = for_object/main.o for_object/Arduino.o for_object/SerialClass.o for_object/SPI.o for_object/DataReciever.o for_object/EEPROM.o for_object/Screen.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -mwindows -g3
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/sketch_lighths"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++" -I"C:/dev/git/ArduinoLights/devpp_mock/arduino_mock" -I"C:/dev/git/ArduinoLights/sketch_lighths"
@@ -41,3 +41,6 @@ for_object/DataReciever.o: ../sketch_lighths/DataReciever.cpp
 
 for_object/EEPROM.o: EEPROM.cpp
 	$(CPP) -c EEPROM.cpp -o for_object/EEPROM.o $(CXXFLAGS)
+
+for_object/Screen.o: ../sketch_lighths/Screen.cpp
+	$(CPP) -c ../sketch_lighths/Screen.cpp -o for_object/Screen.o $(CXXFLAGS)
