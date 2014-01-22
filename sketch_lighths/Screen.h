@@ -43,6 +43,7 @@ struct Screen
     {
       return pixels[i * 3 + 0];
     }
+    return 0;
   }
 
   uint8_t g(uint16_t i)
@@ -51,6 +52,7 @@ struct Screen
     {
       return pixels[i * 3 + 1];
     }
+    return 0;
   }
 
   uint8_t b(uint16_t i)
@@ -59,6 +61,7 @@ struct Screen
     {
       return pixels[i * 3 + 2];
     }
+    return 0;
   }
 
   void set(uint16_t i, uint8_t r, uint8_t g, uint8_t b)
