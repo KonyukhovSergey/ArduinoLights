@@ -10,7 +10,19 @@
 
 #define EEPROM_SIZE 1024
 
-uint8_t pixels[SCREEN_PIXELS * 3];
+// 150 bytes screen buffer
+// 32 * 4 = 128 bytes stack
+// 96 * 4 = 384 bytes variables and arrays
+
+// 64 bytes gamma table
+
+// 512 + 150 + 64 = 726
+
+// 1024 progCopy
+
+
+
+uint8_t pixels[SCREEN_PIXELS * 3]; 
 uint8_t progCopy[EEPROM_SIZE];
 
 DataReciever dataReciever;

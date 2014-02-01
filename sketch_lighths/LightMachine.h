@@ -3,8 +3,9 @@
 
 #define EEPROM_SIZE 1024
 
-#define STACK_SIZE	48
-#define MAX_VARIABLES_COUNT 64
+#define STACK_SIZE	32
+#define MAX_VARIABLES_COUNT 96
+
 
 #include <math.h>
 #include <Arduino.h>
@@ -32,6 +33,8 @@ enum CommandTypes
   SHLEFT, SHRIGHT,
 
   GET_R, GET_G, GET_B,
+  
+  MEM_SET, MEM_GET,
 };
 
 struct LightMachine
@@ -390,6 +393,17 @@ struct LightMachine
 
         case END:
           return pos;
+          
+        case MEM_SET:
+          {
+            uint8_t address = pop();
+            variables[address] = pop();
+          }
+          break;
+
+        case MEM_GET:
+          push(variables[pop()]);
+          break;
 
         default:
           loopPosition = EEPROM_SIZE;

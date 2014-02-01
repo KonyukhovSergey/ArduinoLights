@@ -64,6 +64,7 @@ public class Tokenizer
 
 		add("[a-z][a-z0-9_]+:", TokenType.LABEL);
 		add("[a-z][a-z0-9_]*", TokenType.IDENTIFIER);
+		add("\\.[a-z][a-z0-9_]*", TokenType.MEMBER);
 
 		add("\\;", TokenType.SEMICOLON);
 		add("\\=", TokenType.ASSIGN);
@@ -309,5 +310,6 @@ public class Tokenizer
 		COMMENT,
 		WHITE_SPACE,
 		RELATION,
+		MEMBER,
 	}
 }

@@ -32,6 +32,8 @@ public class ByteCodeGenerator
 		SHLEFT, SHRIGHT,
 
 		GET_R, GET_G, GET_B,
+		
+		MEM_SET, MEM_GET,
 	}
 
 	private LinkedList<Token> tokens;
@@ -134,11 +136,21 @@ public class ByteCodeGenerator
 				break;
 
 			case IDENTIFIER:
-				if (tokens.pollFirst().token != TokenType.ASSIGN)
+				// expression pushvar set_r_comp popvar
+				
+				switch (tokens.peekFirst().token)
 				{
-					throw new Exception("assign token expected '" + token.sequence + "'");
-				}
+					case ASSIGN:
+						tokens.pollFirst();
+						break;
+						
+					case MEMBER:
+						break;
 
+					default:
+						throw new Exception("assign or member token expected '" + token.sequence + "'");
+				}
+				
 				expression();
 
 				writePopVariable(token.sequence);

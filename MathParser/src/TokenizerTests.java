@@ -149,7 +149,20 @@ public class TokenizerTests
 		assertEquals(TokenType.LABEL,tokens.get(9).token);
 		
 		assertEquals(tokens.get(5).sequence, tokens.get(9).sequence);
+	}
+
+	@Test
+	public void testMembers() throws Exception
+	{
+		Tokenizer tokenizer = new Tokenizer();
+
+		tokenizer.tokenize("x.r=1;y.g=x.b;");
+
+		LinkedList<Token> tokens = tokenizer.getTokens();
 		
+		assertEquals(TokenType.IDENTIFIER,tokens.get(0).token);
+		assertEquals(TokenType.MEMBER,tokens.get(1).token);
+		assertEquals(".r", tokens.get(1).sequence);
 	}
 
 }
