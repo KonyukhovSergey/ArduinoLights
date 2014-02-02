@@ -38,7 +38,16 @@ public class Program
 			// "end");
 
 			tokenizer
-					.tokenize("array arr[5];arr[4]=45;arr[3]=arr[4];t=0;loop;set(0,0,127*sin(t)+127,0);t=t+0.1;shright;end");
+					.tokenize("array arr[51];array bar[30];" +
+							"x=0;" +
+							"while x<5 do arr[x]=x*6;x=x+1;repeat;" +
+							"loop;delay(33);x=0;" +
+							"while x<5 do " +
+							"set(arr[x],0,0,0);" +
+							"arr[x]=arr[x]+1;" +
+							"set(arr[x],255,255,255);x=x+1;" +
+							"repeat;" +
+							"end");
 
 			System.out.println("");
 

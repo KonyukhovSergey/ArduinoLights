@@ -397,12 +397,16 @@ struct LightMachine
         case MEM_SET:
           {
             float value = pop();
-            variables[pop() + getByte()] = value;
+            uint8_t adderss = (uint8_t)pop() + getByte();
+            variables[adderss] = value;
           }
           break;
 
         case MEM_GET:
-          push(variables[pop() + getByte()]);
+          {
+            uint8_t adderss = (uint8_t)pop() + getByte();
+            push(variables[adderss]);
+          }
           break;
 
         default:

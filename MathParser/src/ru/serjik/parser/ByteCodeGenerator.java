@@ -348,6 +348,11 @@ public class ByteCodeGenerator
 
 		arrayOffset -= Integer.parseInt(tokenArraySize.sequence);
 
+		if (arrayOffset < variables.keySet().size())
+		{
+			throw new Exception("not enougth memory");
+		}
+
 		arrays.put(tokenArrayName.sequence, arrayOffset);
 	}
 
@@ -653,6 +658,10 @@ public class ByteCodeGenerator
 			if (variables.size() > 63)
 			{
 				throw new Exception("too many variables. there are 64 variables maximum in the program.");
+			}
+			if (variables.size() > arrayOffset - 1)
+			{
+				throw new Exception("too many variables. there is no free memory");
 			}
 			variables.put(sequence, variables.size());
 		}
