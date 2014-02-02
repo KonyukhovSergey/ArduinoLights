@@ -58,6 +58,25 @@ public class Decompiler
 				sb.append('\n');
 				continue;
 			}
+			
+			if (b == CommandTypes.MEM_SET.ordinal())
+			{
+				sb.append("" + pos + " " + "mem_set ");
+				sb.append(dis.readByte() + " ");
+				pos += 1;
+				sb.append('\n');
+				continue;
+			}
+			
+			if (b == CommandTypes.MEM_GET.ordinal())
+			{
+				sb.append("" + pos + " " + "mem_get ");
+				sb.append(dis.readByte() + " ");
+				pos += 1;
+				sb.append('\n');
+				continue;
+			}
+			
 
 			if ((b >> 6) == 2)
 			{

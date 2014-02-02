@@ -165,4 +165,30 @@ public class TokenizerTests
 		assertEquals(".r", tokens.get(1).sequence);
 	}
 
+	@Test
+	public void testBrackets() throws Exception
+	{
+		Tokenizer tokenizer = new Tokenizer();
+
+		tokenizer.tokenize("x[1]=1;");
+
+		LinkedList<Token> tokens = tokenizer.getTokens();
+		
+		assertEquals(TokenType.OPEN_BRACKET,tokens.get(1).token);
+		assertEquals(TokenType.CLOSE_BRACKET,tokens.get(3).token);
+
+	}
+
+	@Test
+	public void testArray() throws Exception
+	{
+		Tokenizer tokenizer = new Tokenizer();
+
+		tokenizer.tokenize("array x[1];");
+
+		LinkedList<Token> tokens = tokenizer.getTokens();
+		
+		assertEquals(TokenType.KEYWORD,tokens.get(0).token);
+	}
+
 }

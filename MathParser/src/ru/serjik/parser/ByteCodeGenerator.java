@@ -32,13 +32,15 @@ public class ByteCodeGenerator
 		SHLEFT, SHRIGHT,
 
 		GET_R, GET_G, GET_B,
-		
+
 		MEM_SET, MEM_GET,
 	}
 
 	private LinkedList<Token> tokens;
 
 	private Map<String, Integer> variables = new HashMap<String, Integer>();
+	private Map<String, Integer> arrays = new HashMap<String, Integer>();
+	private int arrayOffset = 96; // max_variable_count
 
 	private List<CallLabelPosition> callPositions = new ArrayList<CallLabelPosition>();
 	private Map<String, Integer> labels = new HashMap<String, Integer>();
@@ -136,25 +138,53 @@ public class ByteCodeGenerator
 				break;
 
 			case IDENTIFIER:
-				// expression pushvar set_r_comp popvar
-				
-				switch (tokens.peekFirst().token)
+
+				if (arrays.containsKey(token.sequence))
 				{
-					case ASSIGN:
-						tokens.pollFirst();
-						break;
-						
-					case MEMBER:
-						break;
+					if (tokens.pollFirst().token != TokenType.OPEN_BRACKET)
+					{
+						throw new Exception("'[' expected");
+					}
 
-					default:
-						throw new Exception("assign or member token expected '" + token.sequence + "'");
+					expression();
+
+					if (tokens.pollFirst().token != TokenType.CLOSE_BRACKET)
+					{
+						throw new Exception("']' expected");
+					}
+
+					if (tokens.pollFirst().token != TokenType.ASSIGN)
+					{
+						throw new Exception("'=' expected");
+					}
+
+					expression();
+
+					baos.write(CommandTypes.MEM_SET.ordinal());
+					baos.write(arrays.get(token.sequence));
+
+					DebugOutput.println("mem_set " + token.sequence + " offset = " + arrays.get(token.sequence));
 				}
-				
-				expression();
+				else
+				{
+					switch (tokens.peekFirst().token)
+					{
+						case ASSIGN:
+							tokens.pollFirst();
+							break;
 
-				writePopVariable(token.sequence);
-				System.out.println("pop " + token.sequence);
+						case MEMBER:
+							break;
+
+						default:
+							throw new Exception("assign or member token expected '" + token.sequence + "'");
+					}
+
+					expression();
+
+					writePopVariable(token.sequence);
+					DebugOutput.println("pop " + token.sequence);
+				}
 				break;
 
 			case KEYWORD:
@@ -180,12 +210,16 @@ public class ByteCodeGenerator
 		if (token.sequence.equals("loop"))
 		{
 			baos.write(CommandTypes.LOOP.ordinal());
-			System.out.println(token.sequence);
+			DebugOutput.println(token.sequence);
+		}
+		else if (token.sequence.equals("array"))
+		{
+			keywordArray();
 		}
 		else if (token.sequence.equals("end"))
 		{
 			baos.write(CommandTypes.END.ordinal());
-			System.out.println(token.sequence);
+			DebugOutput.println(token.sequence);
 		}
 		else if (token.sequence.equals("call"))
 		{
@@ -199,22 +233,22 @@ public class ByteCodeGenerator
 			callPositions.add(new CallLabelPosition(baos.size(), labelToken.sequence));
 			baos.write(0x40); // call
 			baos.write(0x00);
-			System.out.println(token.sequence + " " + labelToken.sequence);
+			DebugOutput.println(token.sequence + " " + labelToken.sequence);
 		}
 		else if (token.sequence.equals("ret"))
 		{
 			baos.write(CommandTypes.RET.ordinal());
-			System.out.println(token.sequence);
+			DebugOutput.println(token.sequence);
 		}
 		else if (token.sequence.equals("shleft"))
 		{
 			baos.write(CommandTypes.SHLEFT.ordinal());
-			System.out.println(token.sequence);
+			DebugOutput.println(token.sequence);
 		}
 		else if (token.sequence.equals("shright"))
 		{
 			baos.write(CommandTypes.SHRIGHT.ordinal());
-			System.out.println(token.sequence);
+			DebugOutput.println(token.sequence);
 		}
 		else if (token.sequence.equals("if"))
 		{
@@ -252,7 +286,7 @@ public class ByteCodeGenerator
 			callPositions.add(new CallLabelPosition(baos.size(), labelToken.sequence));
 			baos.write(0x50); // goto
 			baos.write(0x00);
-			System.out.println("goto " + token.sequence);
+			DebugOutput.println("goto " + token.sequence);
 		}
 		else if (token.sequence.equals("while"))
 		{
@@ -281,6 +315,42 @@ public class ByteCodeGenerator
 		return true;
 	}
 
+	private void keywordArray() throws Exception
+	{
+		Token tokenArrayName = tokens.pollFirst();
+
+		if (tokenArrayName.token != TokenType.IDENTIFIER)
+		{
+			throw new Exception("identifier is expected: array name[size];");
+		}
+
+		if (arrays.containsKey(tokenArrayName.sequence))
+		{
+			throw new Exception("array name is already defined");
+		}
+
+		if (tokens.pollFirst().token != TokenType.OPEN_BRACKET)
+		{
+			throw new Exception("'[' is expected");
+		}
+
+		Token tokenArraySize = tokens.pollFirst();
+
+		if (tokenArraySize.token != TokenType.CONST_INTEGER)
+		{
+			throw new Exception("array size must be const integer");
+		}
+
+		if (tokens.pollFirst().token != TokenType.CLOSE_BRACKET)
+		{
+			throw new Exception("']'  is expected");
+		}
+
+		arrayOffset -= Integer.parseInt(tokenArraySize.sequence);
+
+		arrays.put(tokenArrayName.sequence, arrayOffset);
+	}
+
 	private void writeGotoAddress(int pos)
 	{
 		baos.write((byte) ((0x50) | ((pos & 0x0f00) >> 8)));
@@ -303,25 +373,25 @@ public class ByteCodeGenerator
 				case '>':
 					math_expression();
 					baos.write(CommandTypes.GREATER.ordinal());
-					System.out.println("greater");
+					DebugOutput.println("greater");
 					break;
 
 				case '<':
 					math_expression();
 					baos.write(CommandTypes.LOWER.ordinal());
-					System.out.println("lower");
+					DebugOutput.println("lower");
 					break;
 
 				case '=':
 					math_expression();
 					baos.write(CommandTypes.EQ.ordinal());
-					System.out.println("eq");
+					DebugOutput.println("eq");
 					break;
 
 				case '!':
 					math_expression();
 					baos.write(CommandTypes.NEQ.ordinal());
-					System.out.println("neq");
+					DebugOutput.println("neq");
 					break;
 			}
 
@@ -345,13 +415,13 @@ public class ByteCodeGenerator
 				case '+':
 					term();
 					baos.write(CommandTypes.ADD.ordinal());
-					System.out.println("add");
+					DebugOutput.println("add");
 					break;
 
 				case '-':
 					term();
 					baos.write(CommandTypes.SUB.ordinal());
-					System.out.println("sub");
+					DebugOutput.println("sub");
 					break;
 			}
 		}
@@ -372,13 +442,13 @@ public class ByteCodeGenerator
 				case '*':
 					factor();
 					baos.write(CommandTypes.MUL.ordinal());
-					System.out.println("mul");
+					DebugOutput.println("mul");
 					break;
 
 				case '/':
 					factor();
 					baos.write(CommandTypes.DIV.ordinal());
-					System.out.println("div");
+					DebugOutput.println("div");
 					break;
 			}
 		}
@@ -393,26 +463,48 @@ public class ByteCodeGenerator
 		{
 			factor();
 			baos.write(CommandTypes.NEG.ordinal());
-			System.out.println("neg");
+			DebugOutput.println("neg");
 		}
 		else
 		{
 			if (token.token == TokenType.CONST_FLOAT)
 			{
 				writePushFloat(token.sequence);
-				System.out.println("push float " + token.sequence);
+				DebugOutput.println("push float " + token.sequence);
 			}
 
 			if (token.token == TokenType.CONST_INTEGER)
 			{
 				writePushInt(token.sequence);
-				System.out.println("push int " + token.sequence);
+				DebugOutput.println("push int " + token.sequence);
 			}
 
 			if (token.token == TokenType.IDENTIFIER)
 			{
-				writePushVariable(token.sequence);
-				System.out.println("push " + token.sequence);
+				if (arrays.containsKey(token.sequence))
+				{
+					if (tokens.pollFirst().token != TokenType.OPEN_BRACKET)
+					{
+						throw new Exception("'[' expected");
+					}
+
+					expression();
+
+					if (tokens.pollFirst().token != TokenType.CLOSE_BRACKET)
+					{
+						throw new Exception("']' expected");
+					}
+
+					baos.write(CommandTypes.MEM_GET.ordinal());
+					baos.write(arrays.get(token.sequence));
+
+					DebugOutput.println("mem_get " + token.sequence + " offset = " + arrays.get(token.sequence));
+				}
+				else
+				{
+					writePushVariable(token.sequence);
+					DebugOutput.println("push " + token.sequence);
+				}
 			}
 
 			if (token.token == TokenType.OPEN_BRACE)
@@ -533,7 +625,7 @@ public class ByteCodeGenerator
 			baos.write(CommandTypes.ABS.ordinal());
 		}
 
-		System.out.println(token.sequence);
+		DebugOutput.println(token.sequence);
 
 		if (tokens.pollFirst().token != TokenType.CLOSE_BRACE)
 		{
@@ -631,5 +723,4 @@ public class ByteCodeGenerator
 			this.endIfPosition = endIfPosition;
 		}
 	}
-
 }

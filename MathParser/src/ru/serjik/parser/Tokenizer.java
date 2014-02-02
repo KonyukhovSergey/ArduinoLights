@@ -27,7 +27,7 @@ public class Tokenizer
 			this.beginPosition = begin;
 			this.endPosition = end;
 
-			System.out.println(sequence + " " + token);
+			DebugOutput.println(sequence + " " + token);
 		}
 
 		public int length()
@@ -48,6 +48,9 @@ public class Tokenizer
 		add("\\(", TokenType.OPEN_BRACE);
 		add("\\)", TokenType.CLOSE_BRACE);
 
+		add("\\[", TokenType.OPEN_BRACKET);
+		add("\\]", TokenType.CLOSE_BRACKET);
+		
 		add("\\+", TokenType.ADD_SUB);
 		add("\\-", TokenType.ADD_SUB);
 		add("\\*", TokenType.MUL_DIV);
@@ -84,7 +87,6 @@ public class Tokenizer
 		predefinedKeywords.put("getr", TokenType.SYSTEM_FUNCTION);
 		predefinedKeywords.put("getg", TokenType.SYSTEM_FUNCTION);
 		predefinedKeywords.put("getb", TokenType.SYSTEM_FUNCTION);
-		
 
 		predefinedKeywords.put("ret", TokenType.KEYWORD);
 		predefinedKeywords.put("call", TokenType.KEYWORD);
@@ -99,6 +101,7 @@ public class Tokenizer
 		predefinedKeywords.put("repeat", TokenType.KEYWORD);
 		predefinedKeywords.put("shleft", TokenType.KEYWORD);
 		predefinedKeywords.put("shright", TokenType.KEYWORD);
+		predefinedKeywords.put("array", TokenType.KEYWORD);
 	}
 
 	public void add(String regex, TokenType tokenType)
@@ -311,5 +314,7 @@ public class Tokenizer
 		WHITE_SPACE,
 		RELATION,
 		MEMBER,
+		OPEN_BRACKET,
+		CLOSE_BRACKET,
 	}
 }

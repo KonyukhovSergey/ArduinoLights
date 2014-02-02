@@ -396,13 +396,13 @@ struct LightMachine
           
         case MEM_SET:
           {
-            uint8_t address = pop();
-            variables[address] = pop();
+            float value = pop();
+            variables[pop() + getByte()] = value;
           }
           break;
 
         case MEM_GET:
-          push(variables[pop()]);
+          push(variables[pop() + getByte()]);
           break;
 
         default:
