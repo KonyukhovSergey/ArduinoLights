@@ -4,8 +4,7 @@
 #define EEPROM_SIZE 1024
 
 #define STACK_SIZE	32
-#define MAX_VARIABLES_COUNT 96
-
+#define MAX_VARIABLES_COUNT 128
 
 #include <math.h>
 #include <Arduino.h>
@@ -44,7 +43,6 @@ struct LightMachine
   float stackf[STACK_SIZE];
   uint32_t *stacki;
   float variables[MAX_VARIABLES_COUNT];
-  uint8_t *progCopy;
 
   uint8_t stackPosition;
   uint8_t interuptCounter;
@@ -52,10 +50,9 @@ struct LightMachine
 
   Screen *screen;
 
-  void init(Screen *screen, uint8_t *progCopy)
+  void init(Screen *screen)
   {
     this->screen = screen;
-    this->progCopy = progCopy;
 
     screen->clear(0, 0, 0);
 
@@ -69,11 +66,6 @@ struct LightMachine
       variables[i] = 0;
     }
 
-    for(int i = 0; i < EEPROM_SIZE; i ++)
-    {
-      progCopy[i] = EEPROM.read(i);
-    }
-
     interuptCounter = 0;
 
     loopPosition = execute();
@@ -81,8 +73,7 @@ struct LightMachine
 
   uint8_t prog(uint16_t pos)
   {
-    return progCopy[pos];
-    //return EEPROM.read(pos);
+    return EEPROM.read(pos);
   }
 
   float pop()

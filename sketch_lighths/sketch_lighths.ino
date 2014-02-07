@@ -5,8 +5,9 @@
 #include "LightMachine.h"
 #include "Screen.h"
 
+#define EEPROM_SIZE 1024
+
 uint8_t pixels[SCREEN_PIXELS * 3];
-uint8_t progCopy[EEPROM_SIZE];
 
 DataReciever dataReciever;
 LightMachine lightMachine;
@@ -22,21 +23,22 @@ void setup()
   SPI.setClockDivider(SPI_CLOCK_DIV16);
   delay(1);
   randomSeed(analogRead(0));
-
+  
   screen.init(pixels);
+  
   dataReciever.init();
-  lightMachine.init(&screen, progCopy);
+  lightMachine.init(&screen);
 }
 
 void loop() 
 {
   if(dataReciever.data() > 0)
   {
-    lightMachine.init(&screen, progCopy);
+  	lightMachine.init(&screen);
   }
-
+  
   lightMachine.execute();
-
+  
   screen.send();
 }
 

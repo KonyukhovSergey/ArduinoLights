@@ -38,13 +38,13 @@ public class Program
 			// "end");
 
 			tokenizer
-					.tokenize("array arr[51];array bar[30];" +
+					.tokenize("array arr[5];array bar[3];" +
 							"x=0;" +
 							"while x<5 do arr[x]=x*6;x=x+1;repeat;" +
 							"loop;delay(33);x=0;" +
 							"while x<5 do " +
 							"set(arr[x],0,0,0);" +
-							"arr[x]=arr[x]+1;" +
+							"arr[x]=arr[x]+1;if arr[x]>49 then arr[x]=0;endif;" +
 							"set(arr[x],255,255,255);x=x+1;" +
 							"repeat;" +
 							"end");

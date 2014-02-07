@@ -6,7 +6,7 @@
 
 #define SCREEN_PIXELS 50
 
-extern uint8_t gamma[64];
+extern uint8_t gamma[256];
 
 struct Screen
 {
@@ -21,9 +21,9 @@ struct Screen
 
   void setGamma(float gammaValue)
   {
-    for(uint8_t i = 0; i < 64; i++)
+    for(uint16_t i = 0; i < 256; i++)
     {
-      gamma[i] = 255.0f * pow((float)i / 63.0f, gammaValue);
+      gamma[i] = 255.0f * pow((float)i / 255.0f, gammaValue);
     }
   }
 
@@ -123,7 +123,7 @@ struct Screen
   {
     for(int i = 0; i < SCREEN_PIXELS * 3; i ++) 
     {
-      SPI.transfer(gamma[pixels[i] >> 2]);
+      SPI.transfer(gamma[pixels[i]]);
     }
     delay(1);
   }

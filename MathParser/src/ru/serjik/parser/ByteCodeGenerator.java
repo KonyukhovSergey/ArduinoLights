@@ -40,7 +40,7 @@ public class ByteCodeGenerator
 
 	private Map<String, Integer> variables = new HashMap<String, Integer>();
 	private Map<String, Integer> arrays = new HashMap<String, Integer>();
-	private int arrayOffset = 96; // max_variable_count
+	private int arrayOffset = 128; // max_variable_count
 
 	private List<CallLabelPosition> callPositions = new ArrayList<CallLabelPosition>();
 	private Map<String, Integer> labels = new HashMap<String, Integer>();
