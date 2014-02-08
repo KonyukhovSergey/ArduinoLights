@@ -34,6 +34,8 @@ enum CommandTypes
   GET_R, GET_G, GET_B,
   
   MEM_SET, MEM_GET,
+  
+  MOD,
 };
 
 struct LightMachine
@@ -397,6 +399,13 @@ struct LightMachine
           {
             uint8_t adderss = (uint8_t)pop() + getByte();
             push(variables[adderss]);
+          }
+          break;
+          
+        case MOD:
+          {
+            float value = pop();
+            push(value - ((uint32_t)value));
           }
           break;
 

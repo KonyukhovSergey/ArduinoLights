@@ -34,6 +34,8 @@ public class ByteCodeGenerator
 		GET_R, GET_G, GET_B,
 
 		MEM_SET, MEM_GET,
+		
+		MOD,
 	}
 
 	private LinkedList<Token> tokens;
@@ -628,6 +630,11 @@ public class ByteCodeGenerator
 		{
 			expression();
 			baos.write(CommandTypes.ABS.ordinal());
+		}
+		else if (token.sequence.equals("mod"))
+		{
+			expression();
+			baos.write(CommandTypes.MOD.ordinal());
 		}
 
 		DebugOutput.println(token.sequence);

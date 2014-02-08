@@ -87,6 +87,7 @@ public class Tokenizer
 		predefinedKeywords.put("getr", TokenType.SYSTEM_FUNCTION);
 		predefinedKeywords.put("getg", TokenType.SYSTEM_FUNCTION);
 		predefinedKeywords.put("getb", TokenType.SYSTEM_FUNCTION);
+		predefinedKeywords.put("mod", TokenType.SYSTEM_FUNCTION);
 
 		predefinedKeywords.put("ret", TokenType.KEYWORD);
 		predefinedKeywords.put("call", TokenType.KEYWORD);
