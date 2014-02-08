@@ -1,12 +1,16 @@
 #include <Arduino.h>
 #include <SerialClass.h>
 #include <EEPROM.h>
-#include "DataReciever.h"
+#include "DataReceiver.h"
 
-uint8_t DataReciever::data()
+uint8_t DataReceiver::data()
 {
+  uint8_t result = DATA_NONE;
+  
   while(Serial.available() > 0)
   {
+    result = DATA_RECEIVING;
+    
     int dataByte = Serial.read();
 
     if(size == 0)
@@ -15,7 +19,7 @@ uint8_t DataReciever::data()
       {
         EEPROM.write(len, 0);
         len = 0;
-        return 1;
+        return DATA_READY;
       }
       else
       {
@@ -39,6 +43,6 @@ uint8_t DataReciever::data()
     }
   }
 
-  return 0;
+  return result;
 }
 

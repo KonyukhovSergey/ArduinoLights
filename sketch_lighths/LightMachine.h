@@ -32,9 +32,9 @@ enum CommandTypes
   SHLEFT, SHRIGHT,
 
   GET_R, GET_G, GET_B,
-  
+
   MEM_SET, MEM_GET,
-  
+
   MOD,
 };
 
@@ -47,7 +47,6 @@ struct LightMachine
   float variables[MAX_VARIABLES_COUNT];
 
   uint8_t stackPosition;
-  uint8_t interuptCounter;
   uint16_t loopPosition;
 
   Screen *screen;
@@ -68,10 +67,13 @@ struct LightMachine
       variables[i] = 0;
     }
 
-    interuptCounter = 0;
-
     loopPosition = execute();
-  }	
+  }
+
+  void stop()
+  {
+    loopPosition = EEPROM_SIZE;
+  }
 
   uint8_t prog(uint16_t pos)
   {
@@ -164,27 +166,20 @@ struct LightMachine
 
     while(true)
     {
-      interuptCounter++;
-
-      if(interuptCounter > 254)
+      if(Serial.available() > 0)
       {
-        interuptCounter = 0;
-
-        if(Serial.available() > 0)
-        {
-          loopPosition = EEPROM_SIZE;
-          return EEPROM_SIZE;
-        }
+        stop();
+        return EEPROM_SIZE;
       }
 
       uint8_t b = prog(pos);
+      pos++;
 
       if(b == 0x00)
       {
-        break;
+        loopPosition = EEPROM_SIZE;
+        return EEPROM_SIZE;
       }
-
-      pos++;
 
       switch(b >> 6)
       {
@@ -386,7 +381,7 @@ struct LightMachine
 
         case END:
           return pos;
-          
+
         case MEM_SET:
           {
             float value = pop();
@@ -401,7 +396,7 @@ struct LightMachine
             push(variables[adderss]);
           }
           break;
-          
+
         case MOD:
           {
             float value = pop();
@@ -410,7 +405,7 @@ struct LightMachine
           break;
 
         default:
-          loopPosition = EEPROM_SIZE;
+          stop();
           return pos;
           break;
         }
@@ -457,6 +452,8 @@ struct LightMachine
 };
 
 #endif
+
+
 
 
 

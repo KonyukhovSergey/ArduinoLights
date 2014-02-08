@@ -121,7 +121,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=..\sketch_lighths\DataReciever.cpp
+FileName=..\sketch_lighths\Screen.h
 CompileCpp=1
 Folder=sketch_code
 Compile=1
@@ -131,9 +131,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=..\sketch_lighths\DataReciever.h
+FileName=arduino_mock\EEPROM.h
 CompileCpp=1
-Folder=sketch_code
+Folder=arduino_mock
 Compile=1
 Link=1
 Priority=1000
@@ -141,7 +141,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit14]
-FileName=..\sketch_lighths\Screen.cpp
+FileName=..\sketch_lighths\DataReceiver.h
 CompileCpp=1
 Folder=sketch_code
 Compile=1
@@ -321,7 +321,17 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit11]
-FileName=..\sketch_lighths\Screen.h
+FileName=EEPROM.cpp
+CompileCpp=1
+Folder=arduino_mock
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit12]
+FileName=..\sketch_lighths\Screen.cpp
 CompileCpp=1
 Folder=sketch_code
 Compile=1
@@ -330,20 +340,10 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
-FileName=arduino_mock\EEPROM.h
-CompileCpp=1
-Folder=arduino_mock
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit13]
-FileName=EEPROM.cpp
+FileName=..\sketch_lighths\DataReceiver.cpp
 CompileCpp=1
-Folder=arduino_mock
+Folder=sketch_code
 Compile=1
 Link=1
 Priority=1000
