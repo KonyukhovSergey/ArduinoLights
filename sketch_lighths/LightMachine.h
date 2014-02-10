@@ -166,12 +166,6 @@ struct LightMachine
 
     while(true)
     {
-      if(Serial.available() > 0)
-      {
-        stop();
-        return EEPROM_SIZE;
-      }
-
       uint8_t b = prog(pos);
       pos++;
 
