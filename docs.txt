@@ -33,6 +33,20 @@ public enum CommandTypes
 	MOD,
 }
 
+
+language specs
+
+// variables and arrays
+
+identifier = value; // declaration and assignement float value
+array identifier[size]; // declaration array.
+
+// keywords
+loop; // code before loop execute at start. code after execute every frame.
+
+
+
+
 transfer protocol
 
 expected on reciever size:
@@ -42,4 +56,6 @@ expected on reciever size:
 3. send one byte(xor data byte)
 
 last block lenght == 0;
+
+
 
