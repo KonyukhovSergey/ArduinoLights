@@ -1,34 +1,37 @@
 byte code:
 
-10xxxxxx == 0x80 push variable
-11xxxxxx == 0xc0 pop var
+10xxxxxx == 0x80 push variable (xxxxxx - index)
+11xxxxxx == 0xc0 pop var (xxxxxx - index)
 00xxxxxx any one byte command
-0100xxxx == 0x40 xxxxxxxx call
+0100xxxx == 0x40 xxxxxxxx call (10 bytes address value)
 0101xxxx == 0x50 xxxxxxxx goto
 0110xxxx == 0x60 xxxxxxxx jump if zero
-0111xxxx free for use... may be used for push decimal
+0111xxxx free for use... 
 
-	public enum CommandTypes
-	{
-		ERROR_,
+public enum CommandTypes
+{
+	ERROR_,
 
-		ADD, SUB, MUL, DIV, NEG,
+	ADD, SUB, MUL, DIV, NEG,
 
-		SIN, COS, EXP, SQRT, POW, ABS,
+	SIN, COS, EXP, SQRT, POW, ABS,
 
-		LOOP, DELAY, TIME, RND, RET, END,
+	LOOP, DELAY, TIME, RND, RET, END,
 
-		GREATER, LOWER, EQ, NEQ,
+	GREATER, LOWER, EQ, NEQ,
 
-		SET_RGB, SET_GAMMA,
+	SET_RGB, SET_GAMMA,
 
-		PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
+	PUSH_BYTE, PUSH_SHORT, PUSH_INT, PUSH_FLOAT,
 
-		SHLEFT, SHRIGHT,
+	SHLEFT, SHRIGHT,
 
-		GET_R, GET_G, GET_B,
-	}
+	GET_R, GET_G, GET_B,
 
+	MEM_SET, MEM_GET,
+
+	MOD,
+}
 
 transfer protocol
 
@@ -39,3 +42,4 @@ expected on reciever size:
 3. send one byte(xor data byte)
 
 last block lenght == 0;
+
