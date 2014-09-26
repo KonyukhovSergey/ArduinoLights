@@ -1,0 +1,10 @@
+while programm execute
+
+	variables		128		512
+	stack			32		128
+	pixels			50		150
+	gamma					256
+	
+	
+
+	

@@ -6,15 +6,15 @@
 
 #define SCREEN_PIXELS 50
 
-extern uint8_t gamma[256];
-
 struct Screen
 {
   uint8_t *pixels;
+  uint8_t *gamma;
 
-  void init(uint8_t *pixels)
+  void init(uint8_t *pixels, uint8_t *gamma)
   {
     this->pixels = pixels;
+    this->gamma = gamma;
     clear(0, 0, 0);
     setGamma(3.0f);
   }
@@ -124,6 +124,28 @@ struct Screen
     for(int i = 0; i < SCREEN_PIXELS * 3; i ++) 
     {
       SPI.transfer(gamma[pixels[i]]);
+    }
+    delay(1);
+  }
+  
+  void progress(uint16_t position, uint16_t total)
+  {
+    uint8_t completed = (position * SCREEN_PIXELS) / total;
+	
+    for(int i = 0; i < SCREEN_PIXELS; i ++) 
+    {
+	  if(i > completed)
+	  {
+        SPI.transfer(0);
+        SPI.transfer(255);
+        SPI.transfer(0);
+	  }
+	  else
+	  {
+        SPI.transfer(128);
+        SPI.transfer(128);
+        SPI.transfer(128);
+      }
     }
     delay(1);
   }
