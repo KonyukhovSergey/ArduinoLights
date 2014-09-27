@@ -67,6 +67,11 @@ public class ActivityPixels extends Activity
 			startActivity(BluetoothDevicePicker.intent());
 			return true;
 		}
+		
+		if(item.getItemId() == R.id.action_export)
+		{
+			
+		}
 
 		// TODO Auto-generated method stub
 		return super.onMenuItemSelected(featureId, item);

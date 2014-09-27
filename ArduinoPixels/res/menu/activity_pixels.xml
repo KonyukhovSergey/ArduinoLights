@@ -5,6 +5,10 @@
         android:showAsAction="always"
         android:title="new"/>
     <item
+        android:id="@+id/action_export"
+        android:showAsAction="never"
+        android:title="Export"/>
+    <item
         android:id="@+id/action_pick_bluetooth_device"
         android:showAsAction="never"
         android:title="Pick bluetooth..."/>

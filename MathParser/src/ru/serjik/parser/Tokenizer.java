@@ -247,7 +247,7 @@ public class Tokenizer
 						sb.setLength(sb.length() - identSize.length());
 						addTokenToStringBuilder(sb, token);
 					}
-					else if (token.sequence.equals("loop") || token.sequence.equals("ret")
+					else if (token.sequence.equals("send") || token.sequence.equals("loop") || token.sequence.equals("ret")
 							|| token.sequence.equals("shleft") || token.sequence.equals("shright")
 							|| token.sequence.equals("end"))
 					{
