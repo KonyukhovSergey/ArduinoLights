@@ -1,0 +1,70 @@
+# depslib dependency file v1.0
+1411805151 source:c:\dev\git\arduinolights\sketch_lighths\datareceiver.cpp
+	<Arduino.h>
+	<SerialClass.h>
+	<EEPROM.h>
+	"DataReceiver.h"
+
+1396645948 c:\dev\git\arduinolights\devpp_mock\arduino_mock\arduino.h
+	<windows.h>
+	<math.h>
+
+1411805576 c:\dev\git\arduinolights\devpp_mock\arduino_mock\serialclass.h
+	<memory.h>
+
+1411746309 c:\dev\git\arduinolights\devpp_mock\arduino_mock\eeprom.h
+	<stdio.h>
+
+1411806976 c:\dev\git\arduinolights\sketch_lighths\datareceiver.h
+	<Arduino.h>
+
+1411742960 source:c:\dev\git\arduinolights\sketch_lighths\screen.cpp
+	"Screen.h"
+	<Arduino.h>
+
+1411817145 c:\dev\git\arduinolights\sketch_lighths\screen.h
+	<Arduino.h>
+	<SPI.h>
+
+1411746400 c:\dev\git\arduinolights\devpp_mock\arduino_mock\spi.h
+	<Arduino.h>
+
+1411752453 source:c:\dev\git\arduinolights\devpp_mock\arduino_mock\arduino.cpp
+	<Arduino.h>
+
+1411805576 source:c:\dev\git\arduinolights\devpp_mock\arduino_mock\serialclass.cpp
+	"SerialClass.h"
+	<stdio.h>
+
+1411746375 source:c:\dev\git\arduinolights\devpp_mock\arduino_mock\spi.cpp
+	"SPI.h"
+	<stdio.h>
+
+1396645948 source:c:\dev\git\arduinolights\devpp_mock\eeprom.cpp
+	"EEPROM.h"
+
+1411816904 source:c:\dev\git\arduinolights\devpp_mock\main.cpp
+	<windows.h>
+	"sketch_lighths.ino"
+
+1411806499 c:\dev\git\arduinolights\sketch_lighths\program.cpp
+	<SPI.h>
+	<EEPROM.h>
+	"DataReceiver.h"
+	"LightMachine.h"
+	"Screen.h"
+
+1411816288 c:\dev\git\arduinolights\sketch_lighths\lightmachine.h
+	<math.h>
+	<Arduino.h>
+	<EEPROM.h>
+	<SerialClass.h>
+	"Screen.h"
+
+1411817743 c:\dev\git\arduinolights\sketch_lighths\sketch_lighths.ino
+	<SPI.h>
+	<EEPROM.h>
+	"DataReceiver.h"
+	"LightMachine.h"
+	"Screen.h"
+

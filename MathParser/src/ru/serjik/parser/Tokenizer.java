@@ -96,7 +96,7 @@ public class Tokenizer
 		predefinedKeywords.put("if", TokenType.KEYWORD);
 		predefinedKeywords.put("then", TokenType.KEYWORD);
 		predefinedKeywords.put("goto", TokenType.KEYWORD);
-		predefinedKeywords.put("loop", TokenType.KEYWORD);
+		predefinedKeywords.put("send", TokenType.KEYWORD);
 		predefinedKeywords.put("while", TokenType.KEYWORD);
 		predefinedKeywords.put("do", TokenType.KEYWORD);
 		predefinedKeywords.put("repeat", TokenType.KEYWORD);

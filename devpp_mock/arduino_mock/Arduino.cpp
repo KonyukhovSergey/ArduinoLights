@@ -2,12 +2,12 @@
 
 void delay(int value)
 {
-	Sleep(value);
+    Sleep(value);
 }
 
 int analogRead(int pin)
 {
-	return 0;
+    return 0;
 }
 
 void randomSeed(int value)
@@ -16,10 +16,10 @@ void randomSeed(int value)
 
 int random(int maxValue)
 {
-	return rand()%maxValue;
+    return rand() % maxValue;
 }
 
 int millis()
 {
-	return 2839;
+    return GetTickCount();
 }

@@ -38,16 +38,11 @@ public class Program
 			// "end");
 
 			tokenizer
-					.tokenize("array arr[5];array bar[3];" +
-							"x=0;" +
-							"while x<5 do arr[x]=x*6;x=x+1;repeat;" +
-							"loop;delay(33);x=0;" +
-							"while x<5 do " +
-							"set(arr[x],0,0,0);" +
-							"arr[x]=arr[x]+1;if arr[x]>49 then arr[x]=0;endif;" +
-							"set(arr[x],255,255,255);x=x+1;" +
-							"repeat;" +
-							"end");
+					.tokenize("pos = 0;color = 0;" + "r = 255; g = 0; b = 0;" + "mainloop:;"
+							+ "set(pos,r,g,b);delay(1);" + "pos=pos+1;" + "if pos > 49 then pos = 0;"
+							+ "color=color+1;if color>3 then color = 0;endif;" + "if color==0 then r=0;b=0;b=255;endif;"
+							+ "if color==1 then r=0;g=255;b=0;endif;" + "if color==2 then r=255;g=0;b=0;endif;"
+							+ "if color==3 then r=255;g=255;b=255;endif;" + "endif;" + "send;goto mainloop;");
 
 			System.out.println("");
 
@@ -61,14 +56,14 @@ public class Program
 
 			System.out.println(Decompiler.decode(byteCode));
 
-			System.out.printf("Serial.set(\"\\x%02x", byteCode.length);
+			System.out.printf("Serial.set(\"\\x28\\x39\\x%02x\\x%02x", byteCode.length / 4, byteCode.length);
 
 			for (int i = 0; i < byteCode.length; i++)
 			{
 				System.out.printf("\\x%02x", byteCode[i]);
 			}
 
-			System.out.println("\", " + ((int) (byteCode.length)) + " + 2);");
+			System.out.println("\", " + ((int) (byteCode.length)) + " + 2 + 2 + 1);");
 			System.out.println("size = " + ((int) (byteCode.length)));
 
 			//

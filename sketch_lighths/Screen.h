@@ -121,32 +121,38 @@ struct Screen
 
   void send()
   {
-    for(int i = 0; i < SCREEN_PIXELS * 3; i ++) 
+    for(int i = 0; i < SCREEN_PIXELS * 3; i ++)
     {
       SPI.transfer(gamma[pixels[i]]);
     }
+#ifdef MACHINE_MOCK
+SPI.draw();
+#endif // MACHINE_MOCK
     delay(1);
   }
-  
+
   void progress(uint16_t position, uint16_t total)
   {
     uint8_t completed = (position * SCREEN_PIXELS) / total;
-	
-    for(int i = 0; i < SCREEN_PIXELS; i ++) 
+
+    for(int i = 0; i < SCREEN_PIXELS; i++)
     {
 	  if(i > completed)
+	  {
+        SPI.transfer(128);
+        SPI.transfer(128);
+        SPI.transfer(128);
+	  }
+	  else
 	  {
         SPI.transfer(0);
         SPI.transfer(255);
         SPI.transfer(0);
-	  }
-	  else
-	  {
-        SPI.transfer(128);
-        SPI.transfer(128);
-        SPI.transfer(128);
       }
     }
+#ifdef MACHINE_MOCK
+SPI.draw();
+#endif // MACHINE_MOCK
     delay(1);
   }
 };

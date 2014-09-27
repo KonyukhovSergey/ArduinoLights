@@ -5,6 +5,7 @@
 #include "LightMachine.h"
 #include "Screen.h"
 
+
 #define STATE_INIT 0x01
 #define STATE_EXEC 0x02
 #define STATE_STOP 0x03
@@ -36,7 +37,7 @@ void setup()
     state = STATE_INIT;
 }
 
-void stateInit()
+void init()
 {
     dataReceiver.init(data);
     screen.init(data + DATA_OFFSET_PIXELS, data + DATA_OFFSET_GAMMA);
@@ -44,15 +45,13 @@ void stateInit()
     state = STATE_EXEC;
 }
 
-void stateExec()
+void exec()
 {
     switch(lightMachine.execute())
     {
     case MACHINE_EXEC_ERROR:
-        screen.clear(64, 0, 0); screen.send(); delay(250);
-        screen.clear(255, 0, 0); screen.send(); delay(250);
-        screen.clear(64, 0, 0); screen.send(); delay(250);
-        screen.clear(255, 0, 0); screen.send(); delay(250);
+        screen.clear(255, 0, 0);
+        screen.send();
         state = STATE_STOP;
         break;
 
@@ -64,21 +63,20 @@ void stateExec()
         break;
 
     case MACHINE_EXEC_FINISH:
-        screen.clear(128, 128, 128); screen.send(); delay(250);
-        screen.clear(255, 255, 255); screen.send(); delay(250);
-        screen.clear(100, 100, 100); screen.send(); delay(250);
-        screen.clear(255, 255, 255); screen.send(); delay(250);
+        screen.clear(255, 255, 255);
+        screen.send();
         state = STATE_STOP;
         break;
     }
 }
 
-void stateRecv()
+void recv()
 {
     switch(dataReceiver.state())
     {
     case DATA_RECEIVING:
         screen.progress(dataReceiver.len, dataReceiver.total);
+        screen.send();
         delay(10);
         break;
 
@@ -87,21 +85,29 @@ void stateRecv()
         for(uint16_t i = 0; i < dataReceiver.total; i++)
         {
             EEPROM.write(i, dataReceiver.data[i]);
+            screen.set(i * 50 / dataReceiver.total, 0, 0, 255);
+            screen.send();
         }
         state = STATE_INIT;
     }
     break;
 
     case DATA_ERROR:
-        screen.clear(255, 0, 0); screen.send(); delay(250);
-        screen.clear(0, 255, 0); screen.send(); delay(250);
-        screen.clear(0, 0, 255); screen.send(); delay(250);
+        screen.clear(255, 0, 0);
+        screen.send();
+        delay(500);
+        screen.clear(0, 255, 0);
+        screen.send();
+        delay(500);
+        screen.clear(0, 0, 255);
+        screen.send();
+        delay(500);
         state = STATE_INIT;
         break;
     }
 }
 
-void stateStop()
+void stop()
 {
     if(dataReceiver.state() == DATA_AVAILABLE)
     {
@@ -114,25 +120,23 @@ void loop()
 {
     switch(state)
     {
-    case STATE_INIT:
-        stateInit();
+    case 0x01:
+        init();
         break;
 
     case STATE_EXEC:
-        stateExec();
+        exec();
         break;
 
     case STATE_RECV:
-        stateRecv();
+        recv();
         break;
 
     case STATE_STOP:
-        stateStop();
+        stop();
         break;
     }
 }
-
-
 
 
 

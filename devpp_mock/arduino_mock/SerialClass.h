@@ -14,20 +14,21 @@ public:
 
 	int available(void);
 	int read(void);
+
 	void write(int byte)
 	{
-		
+
 	}
-	
+
 	void begin(int){};
-	
+
 	void set(const char* data, int length)
 	{
 		pos = 0;
 		len = length;
 		memcpy(buf, data, len);
 	}
-	
+
 };
 
 extern SerialClass Serial;

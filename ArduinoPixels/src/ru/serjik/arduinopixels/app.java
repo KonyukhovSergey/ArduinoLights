@@ -86,9 +86,13 @@ public class app extends Application implements OnBluetoothDeviceListener
 		{
 			bluetoothState = BluetoothState.SENDING;
 
+			outStream.write(0x28);
+			outStream.write(0x39);
+			outStream.write(data.length / 4);
+			
 			int position = 0;
 			int maxBlockSize = 32;
-
+			
 			while (position < data.length)
 			{
 				int blockSize = data.length - position;

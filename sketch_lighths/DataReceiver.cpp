@@ -3,46 +3,110 @@
 #include <EEPROM.h>
 #include "DataReceiver.h"
 
-uint8_t DataReceiver::data()
+#define DATA_RECEIVER_STATE_NONE            0x00
+#define DATA_RECEIVER_STATE_39              0x01
+#define DATA_RECEIVER_STATE_TOTAL           0x02
+#define DATA_RECEIVER_STATE_RECEIVING       0x03
+
+uint16_t DataReceiver::read()
 {
-  uint8_t result = DATA_NONE;
-  
-  while(Serial.available() > 0)
-  {
-    result = DATA_RECEIVING;
-    
-    int dataByte = Serial.read();
+    int timeout = DATA_RECEIVER_TIMEOUT;
 
-    if(size == 0)
+    while(timeout > 0)
     {
-      if(dataByte == 0)
-      {
-        EEPROM.write(len, 0);
-        len = 0;
-        return DATA_READY;
-      }
-      else
-      {
-        size = dataByte;
-        xorValue = 0;
-      }
+        if(Serial.available())
+        {
+            return Serial.read();
+        }
+        delay(1);
+        timeout--;
     }
-    else
+    return 256;
+}
+
+uint8_t DataReceiver::state()
+{
+    switch(_state)
     {
-      EEPROM.write(len, dataByte);
-      len++;
+    case DATA_RECEIVER_STATE_NONE:
+        if(Serial.available())
+        {
+            if(Serial.read() == 0x28)
+            {
+                _state = DATA_RECEIVER_STATE_39;
+            }
+        }
+        break;
 
-      xorValue = xorValue ^ dataByte;
+    case DATA_RECEIVER_STATE_39:
+        if(read() == 0x39)
+        {
+            _state = DATA_RECEIVER_STATE_TOTAL;
+        }
+        break;
 
-      size--;
+    case DATA_RECEIVER_STATE_TOTAL:
+    {
+        int dataByte = read();
 
-      if(size == 0)
-      {
-        Serial.write(xorValue);
-      }
+        if(dataByte < 256)
+        {
+            total = dataByte * 4;
+            _state = DATA_RECEIVER_STATE_RECEIVING;
+            return DATA_AVAILABLE;
+        }
     }
-  }
+    break;
 
-  return result;
+    case DATA_RECEIVER_STATE_RECEIVING:
+    {
+        int dataByte = read();
+
+        if(dataByte < 256)
+        {
+            if(size == 0)
+            {
+                if(dataByte == 0)
+                {
+                    data[len] = 0;
+                    total = len;
+                    len = 0;
+                    _state = DATA_RECEIVER_STATE_NONE;
+                    return DATA_READY;
+                }
+                else
+                {
+                    size = dataByte;
+                    xorValue = 0;
+                }
+            }
+            else
+            {
+                data[len] = dataByte;
+                len++;
+
+                xorValue = xorValue ^ dataByte;
+
+                size--;
+
+                if(size == 0)
+                {
+                    Serial.write(xorValue);
+                }
+            }
+            return DATA_RECEIVING;
+        }
+        else
+        {
+            return DATA_ERROR;
+        }
+    }
+    break;
+
+    default:
+        return DATA_ERROR;
+    }
+
+    return DATA_NONE;
 }
 

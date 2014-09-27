@@ -21,7 +21,7 @@ public class ByteCodeGenerator
 
 		SIN, COS, EXP, SQRT, POW, ABS,
 
-		LOOP, DELAY, TIME, RND, RET, END,
+		LOOP__, DELAY, TIME, RND, RET, END,
 
 		GREATER, LOWER, EQ, NEQ,
 
@@ -34,8 +34,10 @@ public class ByteCodeGenerator
 		GET_R, GET_G, GET_B,
 
 		MEM_SET, MEM_GET,
-		
+
 		MOD,
+
+		SEND,
 	}
 
 	private LinkedList<Token> tokens;
@@ -135,88 +137,88 @@ public class ByteCodeGenerator
 
 		switch (token.token)
 		{
-			case SYSTEM_FUNCTION:
-				function(token);
-				break;
+		case SYSTEM_FUNCTION:
+			function(token);
+			break;
 
-			case IDENTIFIER:
+		case IDENTIFIER:
 
-				if (arrays.containsKey(token.sequence))
+			if (arrays.containsKey(token.sequence))
+			{
+				if (tokens.pollFirst().token != TokenType.OPEN_BRACKET)
 				{
-					if (tokens.pollFirst().token != TokenType.OPEN_BRACKET)
-					{
-						throw new Exception("'[' expected");
-					}
-
-					expression();
-
-					if (tokens.pollFirst().token != TokenType.CLOSE_BRACKET)
-					{
-						throw new Exception("']' expected");
-					}
-
-					if (tokens.pollFirst().token != TokenType.ASSIGN)
-					{
-						throw new Exception("'=' expected");
-					}
-
-					expression();
-
-					baos.write(CommandTypes.MEM_SET.ordinal());
-					baos.write(arrays.get(token.sequence));
-
-					DebugOutput.println("mem_set " + token.sequence + " offset = " + arrays.get(token.sequence));
-				}
-				else
-				{
-					switch (tokens.peekFirst().token)
-					{
-						case ASSIGN:
-							tokens.pollFirst();
-							break;
-
-						case MEMBER:
-							break;
-
-						default:
-							throw new Exception("assign or member token expected '" + token.sequence + "'");
-					}
-
-					expression();
-
-					writePopVariable(token.sequence);
-					DebugOutput.println("pop " + token.sequence);
-				}
-				break;
-
-			case KEYWORD:
-				return keyword(token);
-
-			case LABEL:
-				if (labels.containsKey(token.sequence))
-				{
-					throw new Exception("the '" + token.sequence + "' is defined already");
+					throw new Exception("'[' expected");
 				}
 
-				labels.put(token.sequence, baos.size());
-				break;
+				expression();
 
-			default:
-				throw new Exception("function or variable expected");
+				if (tokens.pollFirst().token != TokenType.CLOSE_BRACKET)
+				{
+					throw new Exception("']' expected");
+				}
+
+				if (tokens.pollFirst().token != TokenType.ASSIGN)
+				{
+					throw new Exception("'=' expected");
+				}
+
+				expression();
+
+				baos.write(CommandTypes.MEM_SET.ordinal());
+				baos.write(arrays.get(token.sequence));
+
+				DebugOutput.println("mem_set " + token.sequence + " offset = " + arrays.get(token.sequence));
+			}
+			else
+			{
+				switch (tokens.peekFirst().token)
+				{
+				case ASSIGN:
+					tokens.pollFirst();
+					break;
+
+				case MEMBER:
+					break;
+
+				default:
+					throw new Exception("assign or member token expected '" + token.sequence + "'");
+				}
+
+				expression();
+
+				writePopVariable(token.sequence);
+				DebugOutput.println("pop " + token.sequence);
+			}
+			break;
+
+		case KEYWORD:
+			return keyword(token);
+
+		case LABEL:
+			if (labels.containsKey(token.sequence))
+			{
+				throw new Exception("the '" + token.sequence + "' is defined already");
+			}
+
+			labels.put(token.sequence, baos.size());
+			break;
+
+		default:
+			throw new Exception("function or variable expected");
 		}
 		return true;
 	}
 
 	private boolean keyword(Token token) throws Exception
 	{
-		if (token.sequence.equals("loop"))
-		{
-			baos.write(CommandTypes.LOOP.ordinal());
-			DebugOutput.println(token.sequence);
-		}
-		else if (token.sequence.equals("array"))
+		if (token.sequence.equals("array"))
 		{
 			keywordArray();
+		}
+		else if (token.sequence.equals("send"))
+		{
+			baos.write(CommandTypes.SEND.ordinal());
+			DebugOutput.println(token.sequence);
 		}
 		else if (token.sequence.equals("end"))
 		{
@@ -377,29 +379,29 @@ public class ByteCodeGenerator
 
 			switch (tokens.pollFirst().sequence.charAt(0))
 			{
-				case '>':
-					math_expression();
-					baos.write(CommandTypes.GREATER.ordinal());
-					DebugOutput.println("greater");
-					break;
+			case '>':
+				math_expression();
+				baos.write(CommandTypes.GREATER.ordinal());
+				DebugOutput.println("greater");
+				break;
 
-				case '<':
-					math_expression();
-					baos.write(CommandTypes.LOWER.ordinal());
-					DebugOutput.println("lower");
-					break;
+			case '<':
+				math_expression();
+				baos.write(CommandTypes.LOWER.ordinal());
+				DebugOutput.println("lower");
+				break;
 
-				case '=':
-					math_expression();
-					baos.write(CommandTypes.EQ.ordinal());
-					DebugOutput.println("eq");
-					break;
+			case '=':
+				math_expression();
+				baos.write(CommandTypes.EQ.ordinal());
+				DebugOutput.println("eq");
+				break;
 
-				case '!':
-					math_expression();
-					baos.write(CommandTypes.NEQ.ordinal());
-					DebugOutput.println("neq");
-					break;
+			case '!':
+				math_expression();
+				baos.write(CommandTypes.NEQ.ordinal());
+				DebugOutput.println("neq");
+				break;
 			}
 
 		}
@@ -419,17 +421,17 @@ public class ByteCodeGenerator
 
 			switch (tokens.pollFirst().sequence.charAt(0))
 			{
-				case '+':
-					term();
-					baos.write(CommandTypes.ADD.ordinal());
-					DebugOutput.println("add");
-					break;
+			case '+':
+				term();
+				baos.write(CommandTypes.ADD.ordinal());
+				DebugOutput.println("add");
+				break;
 
-				case '-':
-					term();
-					baos.write(CommandTypes.SUB.ordinal());
-					DebugOutput.println("sub");
-					break;
+			case '-':
+				term();
+				baos.write(CommandTypes.SUB.ordinal());
+				DebugOutput.println("sub");
+				break;
 			}
 		}
 	}
@@ -446,17 +448,17 @@ public class ByteCodeGenerator
 			}
 			switch (tokens.pollFirst().sequence.charAt(0))
 			{
-				case '*':
-					factor();
-					baos.write(CommandTypes.MUL.ordinal());
-					DebugOutput.println("mul");
-					break;
+			case '*':
+				factor();
+				baos.write(CommandTypes.MUL.ordinal());
+				DebugOutput.println("mul");
+				break;
 
-				case '/':
-					factor();
-					baos.write(CommandTypes.DIV.ordinal());
-					DebugOutput.println("div");
-					break;
+			case '/':
+				factor();
+				baos.write(CommandTypes.DIV.ordinal());
+				DebugOutput.println("div");
+				break;
 			}
 		}
 	}

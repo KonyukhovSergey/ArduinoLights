@@ -23,7 +23,6 @@ public:
 	void setBitOrder(int bitOrder){	};
 	void setDataMode(int dataNode){	};
 	void setClockDivider(int clockDivider){	};
-	
 };
 
 extern SPIClass SPI;

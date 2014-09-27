@@ -8,9 +8,7 @@ SPIClass::SPIClass(int size)
 	len = size;
 	pos = 0;
 	hdc = GetDC(0);
-
 }
-
 
 SPIClass::~SPIClass(void)
 {
@@ -34,8 +32,8 @@ void SPIClass::transfer(int byte)
 	}
 }
 
-int count=0;
-int ticks=GetTickCount();
+int count = 0;
+int ticks = GetTickCount();
 
 void SPIClass::draw()
 {
@@ -47,7 +45,7 @@ void SPIClass::draw()
 		SetPixel(hdc, i * 4 + 10, 11, cr);
 		SetPixel(hdc, i * 4 + 10, 12, cr);
 		SetPixel(hdc, i * 4 + 10, 13, cr);
- 
+
 		SetPixel(hdc, i * 4 + 11, 10, cr);
 		SetPixel(hdc, i * 4 + 11, 11, cr);
 		SetPixel(hdc, i * 4 + 11, 12, cr);
@@ -63,19 +61,17 @@ void SPIClass::draw()
 		SetPixel(hdc, i * 4 + 13, 12, cr);
 		SetPixel(hdc, i * 4 + 13, 13, cr);
 	}
-	
+
 	count++;
-	
-	if(GetTickCount()-ticks >1000)
+
+	if(GetTickCount() - ticks > 1000)
 	{
 		char str[16];
-		sprintf(str,"%d",count);
-		count=0;
-		TextOutA(hdc,300,1,str,strlen(str));
-		ticks=GetTickCount();
+		sprintf(str, "%d", count);
+		count = 0;
+		TextOutA(hdc, 300, 1, str, strlen(str));
+		ticks = GetTickCount();
 	}
-	
 }
-
 
 SPIClass SPI(50);

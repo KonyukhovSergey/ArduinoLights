@@ -35,14 +35,14 @@ public class ActivityProgram extends Activity
 		if (prog.isEmpty())
 		{
 			prog = getIntent().getStringExtra(PROGRAM_NAME) + "\n"
-					+ "// keywords: loop, call label, ret, goto label, if ... then ... endif; end;\n"
+					+ "// keywords: send, call label, ret, goto label, if ... then ... endif; end;\n"
 					+ "// math: sin(x), cos(x), exp(x), sqrt(x), pow(x, y)\n" + "// label: 'identifier:'\n"
 					+ "// system: delay(milliseconds); rnd() returned [0..1]; set(i,r,g,b);\n"
-					+ "// loop: one draw cicle\n" + "pos = 0;color = 0;" + "r = 255; g = 0; b = 0;" + "loop;"
+					+ "pos = 0;color = 0;" + "r = 255; g = 0; b = 0;" + "mainloop:;"
 					+ "set(pos,r,g,b);delay(1);" + "pos=pos+1;" + "if pos > 49 then pos = 0;"
 					+ "color=color+1;if color>3 then color = 0;endif;" + "if color==0 then r=0;b=0;b=255;endif;"
 					+ "if color==1 then r=0;g=255;b=0;endif;" + "if color==2 then r=255;g=0;b=0;endif;"
-					+ "if color==3 then r=255;g=255;b=255;endif;" + "endif;" + "end";
+					+ "if color==3 then r=255;g=255;b=255;endif;" + "endif;" + "goto mainloop;";
 		}
 
 		editProg.setText(prog);

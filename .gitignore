@@ -7,7 +7,6 @@
 
 *.pydevproject
 .metadata
-project.properties
 bin/
 gen/
 tmp/
