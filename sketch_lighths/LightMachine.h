@@ -29,7 +29,7 @@ enum CommandTypes
 
     SIN, COS, EXP, SQRT, POW, ABS,
 
-    LOOP, DELAY, TIME, RND, RET, END,
+    LOOP__, DELAY, TIME, RND, RET, END__,
 
     GREATER, LOWER, EQ, NEQ,
 
@@ -286,11 +286,6 @@ struct LightMachine
                 }
                 break;
 
-                case LOOP:
-                {
-                    return pos;
-                }
-
                 case SQRT:
                 {
                     push(sqrt(pop()));
@@ -368,9 +363,6 @@ struct LightMachine
                 case RND:
                     push((float)random(32767)/32767.0f);
                     break;
-
-                case END:
-                    return pos;
 
                 case MEM_SET:
                 {
