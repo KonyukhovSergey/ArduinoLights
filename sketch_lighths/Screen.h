@@ -139,9 +139,9 @@ SPI.draw();
     {
 	  if(i > completed)
 	  {
-        SPI.transfer(128);
-        SPI.transfer(128);
-        SPI.transfer(128);
+        SPI.transfer(32);
+        SPI.transfer(32);
+        SPI.transfer(32);
 	  }
 	  else
 	  {
