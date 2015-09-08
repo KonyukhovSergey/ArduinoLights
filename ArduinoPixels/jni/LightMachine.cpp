@@ -1,6 +1,9 @@
 #include <jni.h>
+#include "EEPROM.h"
 
-#include "..\\..\\sketch_lighths\\LightMachine.h"
+EEPROMClass EEPROM;
+
+#include "../../sketch_lighths/LightMachine.h"
 
 uint8_t data[MAX_VARIABLES_COUNT * 4 + STACK_SIZE * 4 + 256 + (SCREEN_PIXELS * 4)];
 
@@ -21,10 +24,21 @@ JNIEXPORT jint JNICALL Java_js_jni_code_NativeCalls_init(JNIEnv *env, jclass, jb
 	return 0;
 }
 
-JNIEXPORT jint JNICALL Java_js_jni_code_NativeCalls_exec(JNIEnv *env, jclass, jbyteArray buf) {
-	jint rvalue = lightMachine.execute();
-	env->SetByteArrayRegion(buf, 0, SCREEN_PIXELS * 3, (signed char*) screen.pixels);
+JNIEXPORT jint JNICALL Java_js_jni_code_NativeCalls_tick(JNIEnv *env, jclass) {
+	jint rvalue = lightMachine.tick();
 	return rvalue;
+}
+
+JNIEXPORT jint JNICALL Java_js_jni_code_NativeCalls_draw(JNIEnv *env, jclass, jintArray buf) {
+	unsigned char buff[SCREEN_PIXELS * 4];
+	for (int i = 0; i < SCREEN_PIXELS; i++) {
+		buff[i * 4 + 3] = 255;
+		buff[i * 4 + 2] = SPI.data[i * 3 + 0];
+		buff[i * 4 + 1] = SPI.data[i * 3 + 1];
+		buff[i * 4 + 0] = SPI.data[i * 3 + 2];
+	}
+	env->SetIntArrayRegion(buf, 0, SCREEN_PIXELS, (signed int*) buff);
+	return 0;
 }
 
 }

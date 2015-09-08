@@ -1,8 +1,9 @@
-package ru.serjik.arduinopixels;
+package ru.serjik.ligthmachine;
 
 import java.util.Collections;
 import java.util.List;
 
+import ru.serjik.arduinopixels.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;

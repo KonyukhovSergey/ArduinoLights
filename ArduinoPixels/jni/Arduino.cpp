@@ -5,9 +5,9 @@
 
 void delay(int value) {
 
-//	value += millis();
-//	while (millis() < value)
-//		;
+	value += millis();
+	while (millis() < value)
+		;
 	//   Sleep(value);
 }
 

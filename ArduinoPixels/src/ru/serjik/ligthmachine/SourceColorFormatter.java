@@ -1,4 +1,4 @@
-package ru.serjik.arduinopixels;
+package ru.serjik.ligthmachine;
 
 
 import ru.serjik.parser.Tokenizer;

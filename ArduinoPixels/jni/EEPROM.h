@@ -1,4 +1,5 @@
-#pragma once
+#ifndef EEPROM_H
+#define EEPROM_H
 #define EEPROM_SIZE 1024
 
 #include <stdio.h>
@@ -26,3 +27,4 @@ public:
 };
 
 extern EEPROMClass EEPROM;
+#endif

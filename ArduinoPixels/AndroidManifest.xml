@@ -12,13 +12,13 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
-        android:name="ru.serjik.arduinopixels.app"
+        android:name="ru.serjik.ligthmachine.app"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="ru.serjik.arduinopixels.ActivityPixels"
+            android:name="ru.serjik.ligthmachine.ActivityPixels"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ru.serjik.arduinopixels.ActivityProgram"
+            android:name="ru.serjik.ligthmachine.ActivityProgram"
             android:label="@string/title_activity_activity_formula"
             android:windowSoftInputMode="adjustResize" >
         </activity>

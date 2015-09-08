@@ -1,11 +1,11 @@
-package ru.serjik.arduinopixels;
+package ru.serjik.ligthmachine;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import ru.serjik.arduinopixels.BluetoothDeviceReciever.OnBluetoothDeviceListener;
+import ru.serjik.ligthmachine.BluetoothDeviceReciever.OnBluetoothDeviceListener;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

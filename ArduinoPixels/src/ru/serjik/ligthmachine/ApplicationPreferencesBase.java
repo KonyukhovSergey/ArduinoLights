@@ -1,4 +1,4 @@
-package ru.serjik.arduinopixels;
+package ru.serjik.ligthmachine;
 
 import java.util.ArrayList;
 import java.util.List;
