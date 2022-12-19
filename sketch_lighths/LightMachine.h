@@ -401,7 +401,7 @@ struct LightMachine {
 	}
 
 	uint8_t execute() {
-		uint8_t result = MACHINE_EXEC_INTERRUPT;
+		uint8_t result = 0;
 
 		uint32_t executionStart = millis();
 
